@@ -1,0 +1,13 @@
+# Dockerfile.dev
+FROM node:20-alpine
+WORKDIR /app
+
+# Copy only package files, install deps
+COPY package*.json tsconfig*.json ./
+RUN npm install
+
+# Copy everything else
+COPY . .
+
+EXPOSE 5173
+CMD ["npm", "run", "dev"]

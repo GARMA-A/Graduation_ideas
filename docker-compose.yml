@@ -1,0 +1,27 @@
+services:
+  frontend:
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/app                   
+      - /app/node_modules
+    ports: ["5173:80"]
+    command: npm run dev
+
+  backend:
+    build: 
+      context: ./api/
+      dockerfile: ./api/Dockerfile
+      target: builder
+    ports: ["5000:5000"]
+    volumes:
+      - ./api:/api
+    command: npm run dev
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:6.0
+    ports:
+      - "27018:27017"

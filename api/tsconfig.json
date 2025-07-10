@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true, // makes importing default syntaxes easier
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "target": "es2020",
+    "rootDir": "src",
+    "outDir": "dist",
+    "strict": true
+  },
+  "include": ["src/**/*"]
+}
