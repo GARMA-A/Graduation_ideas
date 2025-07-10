@@ -1,13 +1,12 @@
-import NavBar from "./components/NavBar"
+// import NavBar from "./components/NavBar"
+import { ColorModeProvider } from "./contexts/ThemeContext";
+
 
 function App() {
-  return (<>
-    <div className="bg-gray-500 text-white p-4 min-h-screen flex justify-between items-center">
-
-      <NavBar />
-
-    </div>
-  </>)
+  return (<ColorModeProvider>
+    <></>
+  </ColorModeProvider>
+  );
 
 }
 
