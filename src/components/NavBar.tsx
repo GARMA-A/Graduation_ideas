@@ -3,8 +3,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { WbSunny, Brightness2 } from '@mui/icons-material';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import { FavoriteOutlined } from '@mui/icons-material';
 import { useColorMode } from '../contexts/useColorMode';
@@ -15,8 +14,8 @@ export default function NavBar() {
   const { mode, toggleMode } = useColorMode();
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" color='primary'>
+    <Box sx={{ flexGrow: 1 }} >
+      <AppBar position="static">
         <Toolbar>
           <IconButton
             size="large"
@@ -38,12 +37,11 @@ export default function NavBar() {
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <IconButton color="inherit" onClick={toggleMode}>
-            {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+            {mode === 'dark' ? <WbSunny /> : <Brightness2 />}
           </IconButton>
           <Box >
             <IconButton color="inherit"><FavoriteOutlined />
             </IconButton>
-
 
           </Box>
         </Toolbar>
