@@ -1,6 +1,7 @@
-import { Accordion, AccordionDetails, AccordionSummary, DialogContent, DialogContentText, Typography, useMediaQuery } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, IconButton, Typography, useMediaQuery } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 type SmallNoteProps = {
   title: string;
@@ -30,15 +31,36 @@ export default function SmallNote({ title, description }: SmallNoteProps) {
 
   return <>
     <Accordion sx={{ color: 'white' }} >
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        sx={{
+          '.MuiAccordionSummary-content': {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }
+        }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+          <Typography sx={{ flex: 1, mr: 2 }}>
+            {isSm && title.length > 5 ? getFirst5Words(title) : title}
+            {isMd && title.length > 10 ? getFirst10words(title) : title}
+            {isLg && title.length > 15 ? getFirst15words(title) : title}
+          </Typography>
 
-          {isSm && title.length > 5 ? getFirst5Words(title) : title}
-          {isMd && title.length > 10 ? getFirst10words(title) : title}
-          {isLg && title.length > 15 ? getFirst15words(title) : title}
-
-        </Typography>
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            onFocus={(e) => e.stopPropagation()}
+            color="error"
+            size="small"
+          >
+            <DeleteIcon />
+          </IconButton>
+        </Box>
       </AccordionSummary>
+
 
       <AccordionDetails>
         <Typography>
