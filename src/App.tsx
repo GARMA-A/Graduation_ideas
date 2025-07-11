@@ -1,12 +1,18 @@
 // import NavBar from "./components/NavBar"
 import { Box, Paper, Stack, useMediaQuery, useTheme } from "@mui/material";
 import NavBar from "./components/NavBar";
-import SearchBar from "./components/SearchBar";
-import SmallNote from "./components/SmallNote";
-import SmallNoteContainer from "./components/SmallNotesContainer";
+// import SearchBar from "./components/SearchBar";
+// import SmallNote from "./components/SmallNote";
+// import SmallNoteContainer from "./components/SmallNotesContainer";
 import { ColorModeProvider } from "./contexts/ThemeContext";
 import BottomNavBar from "./components/BottomNavBar";
 import AddNote from "./components/AddNote";
+import AddNotePopUpWindow from "./components/AddNotePopUpWindow";
+import { useState } from "react";
+import SearchBar from "./components/SearchBar";
+import SmallNoteContainer from "./components/SmallNotesContainer";
+import SmallNote from "./components/SmallNote";
+
 
 
 function App() {
@@ -14,6 +20,8 @@ function App() {
 
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const [open, setOpen] = useState(false);
 
 
 
@@ -27,13 +35,15 @@ function App() {
       justifyContent="center"
       width="100%"
       gap={1}
+      overflow="hidden"
 
     >
+      <AddNotePopUpWindow open={open} setOpen={setOpen} />
       <Stack
         direction="column"
         justifyContent="center"
         alignItems="center"
-        width="100%"
+        width="90%"
         sx={{ padding: '16px' }}>
 
         <SearchBar />
@@ -73,7 +83,8 @@ function App() {
 
         </Paper>
       </Stack>
-      <AddNote />
+      <AddNote open={open} setOpen={setOpen} />
+
 
     </Box>
 

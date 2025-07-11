@@ -1,8 +1,17 @@
-import { Fab } from "@mui/material";
+import { Fab, IconButton } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 
-export default function AddNote() {
+type AddNoteProps = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+};
 
+
+export default function AddNote({ open, setOpen }: AddNoteProps) {
+
+  function handleClick() {
+    setOpen(!open);
+  }
 
 
   return (<>
@@ -16,7 +25,9 @@ export default function AddNote() {
         right: 16,
       }}
     >
-      <AddIcon />
+      <IconButton onClick={handleClick} color="inherit" aria-label="add note">
+        <AddIcon />
+      </IconButton>
     </Fab>
   </>);
 

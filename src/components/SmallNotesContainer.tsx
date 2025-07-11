@@ -14,7 +14,7 @@ export default function SmallNoteContainer({ children }: SmallNoteContainerProps
       gap={1}
       sx={{
         width: { xs: '100%', sm: '100%', md: '80vw', lg: '65vw' },
-        maxHeight: '500px',
+        maxHeight: '400px',
         overflowY: 'auto',
         '&::-webkit-scrollbar': {
           width: '8px',
