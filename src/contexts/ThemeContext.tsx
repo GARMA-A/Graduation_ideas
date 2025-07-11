@@ -1,6 +1,5 @@
 import { createContext, useState, useMemo } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { grey } from '@mui/material/colors';
 
 import type { PaletteMode } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -14,6 +13,7 @@ interface ColorModeContextType {
 
 
 const ColorModeContext = createContext<ColorModeContextType | undefined>(undefined);
+
 export { ColorModeContext };
 
 export function ColorModeProvider({ children }: { children: React.ReactNode }) {
@@ -27,21 +27,23 @@ export function ColorModeProvider({ children }: { children: React.ReactNode }) {
       createTheme({
         palette: {
           mode,
-          primary: {
-            main: mode === 'light' ? '#ffffff' : '#000000',
-          },
+          primary: { main: mode === 'light' ? "#2A2B2A" : "#0C0C0C" },
+          secondary: { main: mode === 'light' ? "#706C61" : "#1B1B1B" },
           background: {
-            default: mode === 'light' ? '#f5f5f5' : '#121212',
-            paper: mode === 'light' ? '#ffffff' : '#000000',
+            default: mode === 'light' ? "#D8D8D8" : "#0C0C0C",
+            paper: mode === 'light' ? "#706C61" : "#1B1B1B",
           },
-          text: {
-            primary: mode === 'light' ? grey[900] : '#ffffff',
+        },
+        components: {
+          MuiAppBar: {
+            defaultProps: {
+              enableColorOnDark: true,
+            },
           },
         },
       }),
     [mode]
   );
-
   const toggleMode = () => {
     setMode((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
