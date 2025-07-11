@@ -30,7 +30,7 @@ export default function SmallNote({ title, description }: SmallNoteProps) {
   const isLg = useMediaQuery(theme.breakpoints.down('lg'));
 
   return <>
-    <Accordion sx={{ color: 'white' }} >
+    <Accordion sx={{ color: 'white', flexShrink: 0 }}>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         sx={{
