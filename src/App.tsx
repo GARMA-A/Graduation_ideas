@@ -6,6 +6,7 @@ import SmallNote from "./components/SmallNote";
 import SmallNoteContainer from "./components/SmallNotesContainer";
 import { ColorModeProvider } from "./contexts/ThemeContext";
 import BottomNavBar from "./components/BottomNavBar";
+import AddNote from "./components/AddNote";
 
 
 function App() {
@@ -72,13 +73,14 @@ function App() {
 
         </Paper>
       </Stack>
+      <AddNote />
 
     </Box>
 
 
 
 
-  </ColorModeProvider>);
+  </ColorModeProvider >);
 
 }
 
