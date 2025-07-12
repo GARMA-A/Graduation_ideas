@@ -3,6 +3,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 import type { PaletteMode } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
+import { grey } from '@mui/material/colors';
 
 
 interface ColorModeContextType {
@@ -27,10 +28,10 @@ export function ColorModeProvider({ children }: { children: React.ReactNode }) {
       createTheme({
         palette: {
           mode,
-          primary: { main: mode === 'light' ? "#2A2B2A" : "#0C0C0C" },
+          primary: { main: mode === 'light' ? "#706c61" : "#0C0C0C" },
           secondary: { main: mode === 'light' ? "#706C61" : "#1B1B1B" },
           background: {
-            default: mode === 'light' ? "#D8D8D8" : "#0C0C0C",
+            default: mode === 'light' ? grey[300] : "#0C0C0C",
             paper: mode === 'light' ? "#706C61" : "#1B1B1B",
           },
         },
@@ -38,6 +39,31 @@ export function ColorModeProvider({ children }: { children: React.ReactNode }) {
           MuiAppBar: {
             defaultProps: {
               enableColorOnDark: true,
+            },
+            styleOverrides: {
+              root: ({ theme }) => ({
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.getContrastText(theme.palette.background.paper),
+              }),
+            },
+          },
+          MuiBottomNavigation: {
+            styleOverrides: {
+              root: ({ theme }) => ({
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.getContrastText(theme.palette.background.paper),
+              }),
+            },
+          },
+          MuiBottomNavigationAction: {
+            styleOverrides: {
+              root: ({ theme }) => ({
+                // Force *all states* to use the AppBar color
+                color: theme.palette.getContrastText(theme.palette.background.paper),
+                '&.Mui-selected': {
+                  color: theme.palette.getContrastText(theme.palette.background.paper),
+                },
+              }),
             },
           },
         },

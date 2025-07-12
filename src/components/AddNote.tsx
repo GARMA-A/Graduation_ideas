@@ -15,7 +15,7 @@ export default function AddNote({ open, setOpen }: AddNoteProps) {
   return (<>
 
     <Fab
-      color="primary"
+      color="secondary"
       aria-label="add"
       sx={{
         position: 'fixed',

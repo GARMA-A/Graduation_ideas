@@ -47,7 +47,7 @@ function App() {
         sx={{ padding: '16px' }}>
 
         <SearchBar />
-        <Paper sx={{ padding: '32px' }} elevation={2}>
+        <Paper sx={{ padding: '32px' }} >
           <SmallNoteContainer>
             <SmallNote title="The first title for the first note in my app"
               description="This is a description for the first note. It should be short and concise."

@@ -11,8 +11,9 @@ export default function BottomNavBar() {
     <BottomNavigation
       sx={{ width: '100%', position: 'fixed', bottom: 0, left: 0, zIndex: 1000 }}
       showLabels
+
     >
-      <BottomNavigationAction label='Home' icon={<HomeIcon />} />
+      <BottomNavigationAction sx={{}} label='Home' icon={<HomeIcon />} />
       <BottomNavigationAction label='Favorites' icon={<FavoriteIcon />} />
     </BottomNavigation >
 

@@ -2,6 +2,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, IconButton, Typogra
 import { useTheme } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { grey } from "@mui/material/colors";
 
 type SmallNoteProps = {
   title: string;
@@ -30,7 +31,7 @@ export default function SmallNote({ title, description }: SmallNoteProps) {
   const isLg = useMediaQuery(theme.breakpoints.down('lg'));
 
   return <>
-    <Accordion sx={{ color: 'white', flexShrink: 0 }}>
+    <Accordion sx={{ color: 'white', flexShrink: 0, backgroundColor: grey[800] }}  >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         sx={{
