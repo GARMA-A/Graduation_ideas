@@ -26,7 +26,7 @@ function App() {
 
 
   return (<ColorModeProvider>
-    {!isSm && <NavBar />}
+    <NavBar />
     {isSm && <BottomNavBar />}
 
     <Box

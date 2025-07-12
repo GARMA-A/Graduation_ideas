@@ -7,11 +7,15 @@ import { WbSunny, Brightness2 } from '@mui/icons-material';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import { FavoriteOutlined } from '@mui/icons-material';
 import { useColorMode } from '../contexts/useColorMode';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 
 
 export default function NavBar() {
   const { mode, toggleMode } = useColorMode();
+
+  const theme = useTheme();
+  const isSm = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <Box sx={{ flexGrow: 1 }} >
@@ -40,12 +44,12 @@ export default function NavBar() {
             {mode === 'dark' ? <WbSunny /> : <Brightness2 />}
           </IconButton>
           <Box >
-            <IconButton color="inherit"><FavoriteOutlined />
-            </IconButton>
+            {!isSm && < IconButton color="inherit"><FavoriteOutlined />
+            </IconButton>}
 
           </Box>
         </Toolbar>
       </AppBar>
-    </Box>
+    </Box >
   );
 }
