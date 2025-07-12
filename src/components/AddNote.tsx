@@ -12,8 +12,6 @@ export default function AddNote({ open, setOpen }: AddNoteProps) {
   function handleClick() {
     setOpen(!open);
   }
-
-
   return (<>
 
     <Fab
