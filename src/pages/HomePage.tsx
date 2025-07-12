@@ -8,6 +8,7 @@ import { useState } from "react";
 import SearchBar from "../components/SearchBar";
 import SmallNoteContainer from "../components/SmallNotesContainer";
 import SmallNote from "../components/SmallNote";
+import FullNoteView from "../components/FullNoteView";
 
 
 
@@ -45,46 +46,51 @@ export default function HomePage() {
 
           <SearchBar />
           <Paper sx={{ padding: '32px' }} >
-            <SmallNoteContainer>
-              <SmallNote title="The first title for the first note in my app"
+            {/*the full view will add here */}
 
-                description="this is a description for the second title"
-              />
-              <SmallNote title="the secont title "
-                description="this is a description for the second title"
-              />
-              <SmallNote title="the third title this title will ne used to check the how many words i can put in the title without over lap"
+            <FullNoteView title="this the the full title " description="dsadsdsjdhskjdhskjhdkjshdkshkdjshkdhskdhskahdksjhdkjshdkjshkdskjdhskjdhksjhdksjhdjkshakdjhskjdhskjdhkshdksjhdkjshdksjdhkjshdkjshdjksahkjdhsajkdhsajkhdskhkdjshjkdbskbdshbdhbsahcbksbcbscm,bs,adb,snodioweuwhibsfiusfbhdsfbkdjbfdjbfsiofbsjbfdskfbsaiobsakjasbfkjsbfksabfsajkbfjsabk" />
 
-                description="this is a description for the second title"
-              />
-
-              <SmallNote title="the third title this title will ne used to check the how many words i can put in the title without over lap"
-
-                description="this is a description for the second title"
-              />
-
-              <SmallNote title="the third title this title will ne used to check the how many words i can put in the title without over lap"
-
-                description="this is a description for the second title"
-              />
-
-              <SmallNote title="the third title this title will ne used to check the how many words i can put in the title without over lap"
-
-                description="this is a description for the second title"
-              />
-
-              <SmallNote title="the third title this title will ne used to check the how many words i can put in the title without over lap"
-
-                description="this is a description for the second title"
-              />
-
-              <SmallNote title="the third title this title will ne used to check the how many words i can put in the title without over lap"
-
-                description="this is a description for the second title"
-              />
-
-            </SmallNoteContainer>
-
+            {/* <SmallNoteContainer> */}
+            {/**/}
+            {/*   <SmallNote title="The first title for the first note in my app" */}
+            {/**/}
+            {/*     description="this is a description for the second title" */}
+            {/*   /> */}
+            {/*   <SmallNote title="the secont title " */}
+            {/*     description="this is a description for the second title" */}
+            {/*   /> */}
+            {/*   <SmallNote title="the third title this title will ne used to check the how many words i can put in the title without over lap" */}
+            {/**/}
+            {/*     description="this is a description for the second title" */}
+            {/*   /> */}
+            {/**/}
+            {/*   <SmallNote title="the third title this title will ne used to check the how many words i can put in the title without over lap" */}
+            {/**/}
+            {/*     description="this is a description for the second title" */}
+            {/*   /> */}
+            {/**/}
+            {/*   <SmallNote title="the third title this title will ne used to check the how many words i can put in the title without over lap" */}
+            {/**/}
+            {/*     description="this is a description for the second title" */}
+            {/*   /> */}
+            {/**/}
+            {/*   <SmallNote title="the third title this title will ne used to check the how many words i can put in the title without over lap" */}
+            {/**/}
+            {/*     description="this is a description for the second title" */}
+            {/*   /> */}
+            {/**/}
+            {/*   <SmallNote title="the third title this title will ne used to check the how many words i can put in the title without over lap" */}
+            {/**/}
+            {/*     description="this is a description for the second title" */}
+            {/*   /> */}
+            {/**/}
+            {/*   <SmallNote title="the third title this title will ne used to check the how many words i can put in the title without over lap" */}
+            {/**/}
+            {/*     description="this is a description for the second title" */}
+            {/*   /> */}
+            {/**/}
+            {/* </SmallNoteContainer> */}
+            {/**/}
           </Paper>
         </Stack>
         <AddNote open={open} setOpen={setOpen} />
