@@ -24,6 +24,8 @@ export default function AddNotePopUpWindow({ open, setOpen }: AddNotePopUpWindow
         fullScreen={isMobile}
         fullWidth
         maxWidth="sm"
+
+
       >
         <DialogContent
           sx={{
@@ -35,6 +37,7 @@ export default function AddNotePopUpWindow({ open, setOpen }: AddNotePopUpWindow
             height: '100%',
             width: '100%',
             padding: 3,
+            backgroundColor: theme.palette.background.paper,
           }}
         >
           <TextField
@@ -43,6 +46,7 @@ export default function AddNotePopUpWindow({ open, setOpen }: AddNotePopUpWindow
             variant="outlined"
             sx={{
               width: { xs: '90%', sm: '500px' },
+              backgroundColor: theme.palette.background.default,
             }}
           />
 
@@ -54,6 +58,8 @@ export default function AddNotePopUpWindow({ open, setOpen }: AddNotePopUpWindow
             variant="outlined"
             sx={{
               width: { xs: '90%', sm: '500px' },
+
+              backgroundColor: theme.palette.background.default,
             }}
           />
 
@@ -68,12 +74,13 @@ export default function AddNotePopUpWindow({ open, setOpen }: AddNotePopUpWindow
           >
             <Button
               variant="contained"
-              color="primary"
               size="large"
               endIcon={<AddIcon />}
               sx={{
                 textTransform: 'none',
                 width: { xs: '90%', sm: 'auto' },
+                backgroundColor: theme.palette.background.default,
+                color: theme.palette.text.primary,
               }}
             >
               Create
@@ -81,12 +88,13 @@ export default function AddNotePopUpWindow({ open, setOpen }: AddNotePopUpWindow
 
             <Button
               variant="outlined"
-              color="secondary"
               size="large"
               endIcon={<CancelIcon />}
               sx={{
                 textTransform: 'none',
                 width: { xs: '90%', sm: 'auto' },
+                backgroundColor: theme.palette.background.default,
+                color: theme.palette.text.primary,
               }}
               onClick={() => setOpen(false)}
             >
