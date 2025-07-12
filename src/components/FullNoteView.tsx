@@ -20,32 +20,10 @@ interface FullViewNoteProps {
   description: string;
 }
 
-function getFirst5Words(text: string) {
-  return text.split(/\s+/).slice(0, 5).join(' ') + '...';
-}
-
-function getFirst15Words(text: string) {
-  return text.split(/\s+/).slice(0, 15).join(' ') + '...';
-}
-
-function getFirst25Words(text: string) {
-  return text.split(/\s+/).slice(0, 25).join(' ') + '...';
-}
-
-function getTruncatedTitle(title: string, isSm: boolean, isMd: boolean) {
-  if (isSm) {
-    return title.length > 5 ? getFirst5Words(title) : title;
-  }
-  if (isMd) {
-    return title.length > 15 ? getFirst15Words(title) : title;
-  }
-  return title.length > 25 ? getFirst25Words(title) : title;
-}
 
 export default function FullNoteView({ title, description }: FullViewNoteProps) {
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down('sm'));
-  const isMd = useMediaQuery(theme.breakpoints.between('sm', 'md'));
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -75,7 +53,6 @@ export default function FullNoteView({ title, description }: FullViewNoteProps) 
 
   const handleClose = () => {
     console.log('Close clicked');
-    // Implement close functionality if needed
   };
 
   return (
@@ -125,13 +102,14 @@ export default function FullNoteView({ title, description }: FullViewNoteProps) 
                 flex: 1,
                 mr: 2,
                 fontWeight: 'bold',
-                backgroundColor: theme.palette.mode === 'light' ? grey[800] : grey[800],
+                backgroundColor: theme.palette.mode === 'light' ? grey[900] : grey[800],
                 borderRadius: 1,
                 px: 1,
                 py: 0.5,
               }}
             >
-              {getTruncatedTitle(title, isSm, isMd)}
+              {title}
+
             </Typography>
           </Box>
         }

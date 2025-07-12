@@ -6,8 +6,7 @@ import AddNote from "../components/AddNote";
 import AddNotePopUpWindow from "../components/NotePopUpWindow";
 import { useState } from "react";
 import SearchBar from "../components/SearchBar";
-import SmallNoteContainer from "../components/SmallNotesContainer";
-import SmallNote from "../components/SmallNote";
+
 import FullNoteView from "../components/FullNoteView";
 
 
