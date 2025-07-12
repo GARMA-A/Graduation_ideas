@@ -28,11 +28,11 @@ export function ColorModeProvider({ children }: { children: React.ReactNode }) {
       createTheme({
         palette: {
           mode,
-          primary: { main: mode === 'light' ? "#706c61" : "#0C0C0C" },
-          secondary: { main: mode === 'light' ? "#706C61" : "#1B1B1B" },
+          primary: { main: mode === 'light' ? "#44413b" : "#0C0C0C" },
+          secondary: { main: mode === 'light' ? "#44413b" : "#1B1B1B" },
           background: {
-            default: mode === 'light' ? grey[300] : "#0C0C0C",
-            paper: mode === 'light' ? "#706C61" : "#1B1B1B",
+            default: mode === 'light' ? grey[300] : "#252525",
+            paper: mode === 'light' ? "#706C61" : "#0C0C0C"
           },
         },
         components: {
