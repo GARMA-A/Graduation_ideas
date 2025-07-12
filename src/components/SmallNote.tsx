@@ -1,80 +1,80 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, IconButton, Typography, useMediaQuery } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { grey } from "@mui/material/colors";
+import useMediaQuery from '@mui/material/useMediaQuery';
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  Box,
+  Typography,
+} from '@mui/material';
+import { grey } from '@mui/material/colors';
+import ThreeDots from './ThreeDots';
 
-type SmallNoteProps = {
+interface SmallNoteProps {
   title: string;
   description: string;
-};
-
-
+}
 
 function getFirst5Words(text: string) {
-  return text.split(/\s+/).slice(0, 5).join(' ') + "...";
+  return text.split(/\s+/).slice(0, 5).join(' ') + '...';
 }
-function getFirst10words(text: string) {
-  return text.split(/\s+/).slice(0, 10).join(' ') + "...";
+
+function getFirst15Words(text: string) {
+  return text.split(/\s+/).slice(0, 15).join(' ') + '...';
 }
-function getFirst15words(text: string) {
-  return text.split(/\s+/).slice(0, 15).join(' ') + "...";
+
+function getFirst25Words(text: string) {
+  return text.split(/\s+/).slice(0, 25).join(' ') + '...';
+}
+
+function getTruncatedTitle(title: string, isSm: boolean, isMd: boolean) {
+  if (isSm) {
+    return title.length > 5 ? getFirst5Words(title) : title;
+  }
+  if (isMd) {
+    return title.length > 15 ? getFirst15Words(title) : title;
+  }
+  return title.length > 25 ? getFirst25Words(title) : title;
 }
 
 export default function SmallNote({ title, description }: SmallNoteProps) {
 
 
-
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down('sm'));
-  const isMd = useMediaQuery(theme.breakpoints.down('md'));
-  const isLg = useMediaQuery(theme.breakpoints.down('lg'));
+  const isMd = useMediaQuery(theme.breakpoints.between('sm', 'md'));
 
-  return <>
-    <Accordion sx={{
-      color: 'white', flexShrink: 0, backgroundColor: `${theme.palette.mode === 'light' ? grey[800] : grey[900]
 
-        }`
-    }}  >
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
+  return (
+    <Card
+      sx={{
+        color: 'white',
+        flexShrink: 0,
+        backgroundColor: theme.palette.mode === 'light' ? grey[800] : grey[900],
+      }}
+    >
+      <CardHeader
+        action={
+          <ThreeDots />
+        }
+        title={
+          <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+            <Typography sx={{ flex: 1, mr: 2 }}>
+              {getTruncatedTitle(title, isSm, isMd)}
+            </Typography>
+          </Box>
+        }
         sx={{
-          '.MuiAccordionSummary-content': {
+          '.MuiCardHeader-content': {
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center',
-          }
+            alignItems: isSm ? 'start' : 'center',
+          },
         }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-          <Typography sx={{ flex: 1, mr: 2 }}>
-            {isSm && title.length > 5 ? getFirst5Words(title) : title}
-            {isMd && title.length > 10 ? getFirst10words(title) : title}
-            {isLg && title.length > 15 ? getFirst15words(title) : title}
-          </Typography>
-
-          <IconButton
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            onFocus={(e) => e.stopPropagation()}
-            color="error"
-            size="small"
-          >
-            <DeleteIcon />
-          </IconButton>
-        </Box>
-      </AccordionSummary>
-
-
-      <AccordionDetails>
-        <Typography>
-          {description}
-        </Typography>
-
-      </AccordionDetails>
-    </Accordion >
-
-  </>
-
+      />
+      <CardContent>
+        <Typography>{description}</Typography>
+      </CardContent>
+    </Card>
+  );
 }

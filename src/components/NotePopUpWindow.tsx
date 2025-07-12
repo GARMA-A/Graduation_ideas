@@ -9,7 +9,7 @@ type AddNotePopUpWindowProps = {
 
 
 
-export default function AddNotePopUpWindow({ open, setOpen }: AddNotePopUpWindowProps) {
+export default function NotePopUpWindow({ open, setOpen }: AddNotePopUpWindowProps) {
 
 
   const theme = useTheme();
