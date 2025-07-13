@@ -27,7 +27,7 @@ app.use('/api/notes', notesRoute);
 
 mongoose.connection.once('open', () => {
 	console.log('MongoDB connection established');
-	app.listen(process.env.PORT, () => {
+	app.listen(PORT, () => {
 
 		console.log(`Server is running on port ${PORT}`);
 	}
