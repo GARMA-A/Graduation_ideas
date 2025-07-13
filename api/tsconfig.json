@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true, // makes importing default syntaxes easier
+    "allowSyntheticDefaultImports": true, 
     "moduleResolution": "node",
     "module": "commonjs",
     "target": "es2020",
