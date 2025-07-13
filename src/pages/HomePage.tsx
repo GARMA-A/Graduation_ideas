@@ -1,24 +1,29 @@
 import { Box, Paper, Stack, useMediaQuery, useTheme } from "@mui/material";
-import NavBar from "../components/NavBar";
+import NavBar from "../features/Layout/NavBar";
 import { ColorModeProvider } from "../contexts/ThemeContext";
-import BottomNavBar from "../components/BottomNavBar";
-import AddNote from "../components/AddNote";
-import AddNotePopUpWindow from "../components/NotePopUpWindow";
+import BottomNavBar from "../features/Layout//BottomNavBar";
+import AddNote from "../features/Notes/AddNote";
+import AddNotePopUpWindow from "../features/Notes/NotePopUpWindow";
 import { useState } from "react";
-import SearchBar from "../components/SearchBar";
-
-import FullNoteView from "../components/FullNoteView";
+import SearchBar from "../features/Notes/SearchBar";
+import FullNoteView from "../features/Notes/FullNoteView";
+// import { useDispatch, useSelector } from 'react-redux';
+// import type { TypedUseSelectorHook } from 'react-redux';
+// import type { RootState, AppDispatch } from '../store';
 
 
 
 export default function HomePage() {
 
-
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down('sm'));
-
   const [open, setOpen] = useState(false);
 
+  // const useAppDispatch = () => useDispatch<AppDispatch>();
+  // const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+
+  // const dispatch = useAppDispatch();
+  // const notes = useAppSelector((state) => state.notes.notes);
 
 
   return (

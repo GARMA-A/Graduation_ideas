@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import { WbSunny, Brightness2 } from '@mui/icons-material';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import { FavoriteOutlined } from '@mui/icons-material';
-import { useColorMode } from '../contexts/useColorMode';
+import { useColorMode } from '../../contexts/useColorMode';
 import { useMediaQuery, useTheme } from '@mui/material';
 
 
