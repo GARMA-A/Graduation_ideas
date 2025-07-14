@@ -14,6 +14,8 @@ interface NoteState {
   notes: Array<Note>;
   currentNote: Note;
   menueIsOpen: boolean;
+  isPopupWindowActive: boolean;
+  PopUpWindowOpenFromMenuToEdit: boolean;
 }
 
 const initialState: NoteState = {
@@ -25,9 +27,11 @@ const initialState: NoteState = {
     favorite: false,
     showFullView: false,
     showEditView: false,
-    showCreateView: false
+    showCreateView: false,
   },
   menueIsOpen: false,
+  isPopupWindowActive: false,
+  PopUpWindowOpenFromMenuToEdit: false,
 };
 
 
@@ -37,6 +41,7 @@ const noteSlice = createSlice({
   reducers: {
     create: (state, action) => {
       state.notes.push(action.payload as Note);
+      closePopUpWindow();
     },
     remove: (state, action) => {
       state.notes = state.notes.filter(note => note.id !== (action.payload as { id: string }).id);
@@ -47,10 +52,26 @@ const noteSlice = createSlice({
       if (index !== -1) {
         state.notes[index] = updatedNote;
       }
+      closePopUpWindowAsEdit();
     },
     setCurrentNote: (state, action) => {
       const note = action.payload as Note;
       state.currentNote = note;
+    },
+    closePopUpWindow(state) {
+      state.isPopupWindowActive = false;
+    },
+    openPopUpWindow(state) {
+      state.isPopupWindowActive = true;
+    },
+    openPopUpWindowAsEdit(state) {
+      state.PopUpWindowOpenFromMenuToEdit = true;
+      state.isPopupWindowActive = true;
+
+    },
+    closePopUpWindowAsEdit(state) {
+      state.PopUpWindowOpenFromMenuToEdit = false;
+      state.isPopupWindowActive = false;
     },
     toggleShowFullView(state) {
       state.currentNote.showFullView = !state.currentNote.showFullView;
@@ -94,7 +115,11 @@ export const {
   toggleEditView,
   toggleCreateView,
   toggleShowFullView,
-  setMenuIsActive
+  setMenuIsActive,
+  openPopUpWindow,
+  closePopUpWindow,
+  openPopUpWindowAsEdit,
+  closePopUpWindowAsEdit
 } = noteSlice.actions;
 
 

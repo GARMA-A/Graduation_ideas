@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { IconButton, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useDispatch } from 'react-redux';
-import { setMenuIsActive } from './noteSlice';
+import { openPopUpWindowAsEdit, remove, setMenuIsActive } from './noteSlice';
+import type { AppDispatch } from '../../store';
 
-export default function ThreeDots() {
+export default function ThreeDots({ id }: { id: string }) {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const open = Boolean(anchorEl);
 
 
@@ -26,14 +27,14 @@ export default function ThreeDots() {
   };
   const handleEdit = (event: React.MouseEvent) => {
     event.stopPropagation();
-    console.log('Edit clicked for note:');
     handleMenuClose();
+    dispatch(openPopUpWindowAsEdit());
   };
 
   const handleDelete = (event: React.MouseEvent) => {
     event.stopPropagation();
-    console.log('Delete clicked for note:');
     handleMenuClose();
+    dispatch(remove(id));
   };
 
   const handleAddToFavorite = (event: React.MouseEvent) => {
