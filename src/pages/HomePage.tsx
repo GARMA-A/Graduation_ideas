@@ -7,9 +7,11 @@ import AddNotePopUpWindow from "../features/Notes/NotePopUpWindow";
 import { useState } from "react";
 import SearchBar from "../features/Notes/SearchBar";
 import FullNoteView from "../features/Notes/FullNoteView";
-// import { useDispatch, useSelector } from 'react-redux';
-// import type { TypedUseSelectorHook } from 'react-redux';
-// import type { RootState, AppDispatch } from '../store';
+import { useSelector } from 'react-redux';
+import type { TypedUseSelectorHook } from 'react-redux';
+import type { RootState } from '../store';
+import SmallNoteContainer from "../features/Notes/SmallNotesContainer";
+import SmallNote from "../features/Notes/SmallNote";
 
 
 
@@ -19,19 +21,15 @@ export default function HomePage() {
   const isSm = useMediaQuery(theme.breakpoints.down('sm'));
   const [open, setOpen] = useState(false);
 
-  // const useAppDispatch = () => useDispatch<AppDispatch>();
-  // const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+  const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+  const currentNote = useAppSelector((state) => state.notes.currentNote)
 
-  // const dispatch = useAppDispatch();
-  // const notes = useAppSelector((state) => state.notes.notes);
 
 
   return (
     <ColorModeProvider>
       <NavBar />
       {isSm && <BottomNavBar />}
-
-
       <Box
         component="main"
         display="flex"
@@ -52,49 +50,38 @@ export default function HomePage() {
           <Paper sx={{ padding: '32px' }} >
             {/*the full view will add here */}
 
-            <FullNoteView title="this the the full title " description="dsadsdsjdhskjdhskjhdkjshdkshkdjshkdhskdhskahdksjhdkjshdkjshkdskjdhskjdhksjhdksjhdjkshakdjhskjdhskjdhkshdksjhdkjshdksjdhkjshdkjshdjksahkjdhsajkdhsajkhdskhkdjshjkdbskbdshbdhbsahcbksbcbscm,bs,adb,snodioweuwhibsfiusfbhdsfbkdjbfdjbfsiofbsjbfdskfbsaiobsakjasbfkjsbfksabfsajkbfjsabk" />
+            {currentNote.showFullView && <FullNoteView />}
 
-            {/* <SmallNoteContainer> */}
-            {/**/}
-            {/*   <SmallNote title="The first title for the first note in my app" */}
-            {/**/}
-            {/*     description="this is a description for the second title" */}
-            {/*   /> */}
-            {/*   <SmallNote title="the secont title " */}
-            {/*     description="this is a description for the second title" */}
-            {/*   /> */}
-            {/*   <SmallNote title="the third title this title will ne used to check the how many words i can put in the title without over lap" */}
-            {/**/}
-            {/*     description="this is a description for the second title" */}
-            {/*   /> */}
-            {/**/}
-            {/*   <SmallNote title="the third title this title will ne used to check the how many words i can put in the title without over lap" */}
-            {/**/}
-            {/*     description="this is a description for the second title" */}
-            {/*   /> */}
-            {/**/}
-            {/*   <SmallNote title="the third title this title will ne used to check the how many words i can put in the title without over lap" */}
-            {/**/}
-            {/*     description="this is a description for the second title" */}
-            {/*   /> */}
-            {/**/}
-            {/*   <SmallNote title="the third title this title will ne used to check the how many words i can put in the title without over lap" */}
-            {/**/}
-            {/*     description="this is a description for the second title" */}
-            {/*   /> */}
-            {/**/}
-            {/*   <SmallNote title="the third title this title will ne used to check the how many words i can put in the title without over lap" */}
-            {/**/}
-            {/*     description="this is a description for the second title" */}
-            {/*   /> */}
-            {/**/}
-            {/*   <SmallNote title="the third title this title will ne used to check the how many words i can put in the title without over lap" */}
-            {/**/}
-            {/*     description="this is a description for the second title" */}
-            {/*   /> */}
-            {/**/}
-            {/* </SmallNoteContainer> */}
-            {/**/}
+
+            {!currentNote.showFullView && <SmallNoteContainer>
+
+              <SmallNote id="1" title="The first title for the first note in my app"
+
+                description="this is a description for the second title"
+                favorite={true}
+              />
+              <SmallNote id="2" title="the secont title "
+                description="this is a description for the second title"
+                favorite={false}
+              />
+              <SmallNote id="3" title="the third title this title will ne used to check the how many words i can put in the title without over lap"
+                description="this is a description for the second title"
+                favorite={false}
+              />
+
+              <SmallNote id="4" title="the third title this title will ne used to check the how many words i can put in the title without over lap"
+                description="this is a description for the second title"
+                favorite={false}
+              />
+
+              <SmallNote id="5" title="the third title this title will ne used to check the how many words i can put in the title without over lap"
+                description="this is a description for the second title"
+                favorite={false}
+              />
+
+
+            </SmallNoteContainer>}
+
           </Paper>
         </Stack>
         <AddNote open={open} setOpen={setOpen} />

@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import { noteSlice } from './features/Notes/noteSlice';
+import noteSlice from './features/Notes/noteSlice';
 
 
 

@@ -12,15 +12,27 @@ interface Note {
 
 interface NoteState {
   notes: Array<Note>;
+  currentNote: Note;
+  menueIsOpen: boolean;
 }
 
 const initialState: NoteState = {
   notes: [],
+  currentNote: {
+    id: '',
+    title: '',
+    description: '',
+    favorite: false,
+    showFullView: false,
+    showEditView: false,
+    showCreateView: false
+  },
+  menueIsOpen: false,
 };
 
 
-export const noteSlice = createSlice({
-  name: 'note',
+const noteSlice = createSlice({
+  name: 'notes',
   initialState,
   reducers: {
     create: (state, action) => {
@@ -36,6 +48,13 @@ export const noteSlice = createSlice({
         state.notes[index] = updatedNote;
       }
     },
+    setCurrentNote: (state, action) => {
+      const note = action.payload as Note;
+      state.currentNote = note;
+    },
+    toggleShowFullView(state) {
+      state.currentNote.showFullView = !state.currentNote.showFullView;
+    },
     toggleFavorite: (state, action) => {
       const id = (action.payload as { id: string }).id;
       const note = state.notes.find(note => note.id === id);
@@ -43,12 +62,8 @@ export const noteSlice = createSlice({
         note.favorite = !note.favorite;
       }
     },
-    toggleFullView: (state, action) => {
-      const id = (action.payload as { id: string }).id;
-      const note = state.notes.find(note => note.id === id);
-      if (note) {
-        note.showFullView = !note.showFullView;
-      }
+    setMenuIsActive: (state, action) => {
+      state.menueIsOpen = action.payload as boolean;
     },
     toggleEditView: (state, action) => {
       const id = (action.payload as { id: string }).id;
@@ -68,7 +83,18 @@ export const noteSlice = createSlice({
 
 })
 
+export default noteSlice;
 
-
+export const {
+  create,
+  remove,
+  update,
+  setCurrentNote,
+  toggleFavorite,
+  toggleEditView,
+  toggleCreateView,
+  toggleShowFullView,
+  setMenuIsActive
+} = noteSlice.actions;
 
 

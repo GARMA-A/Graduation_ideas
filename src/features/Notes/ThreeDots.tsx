@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { IconButton, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useDispatch } from 'react-redux';
+import { setMenuIsActive } from './noteSlice';
 
 export default function ThreeDots() {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const dispatch = useDispatch();
   const open = Boolean(anchorEl);
 
 
@@ -14,22 +17,27 @@ export default function ThreeDots() {
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
+    dispatch(setMenuIsActive(true));
     setAnchorEl(event.currentTarget);
   };
   const handleMenuClose = () => {
+    dispatch(setMenuIsActive(false));
     setAnchorEl(null);
   };
-  const handleEdit = () => {
+  const handleEdit = (event: React.MouseEvent) => {
+    event.stopPropagation();
     console.log('Edit clicked for note:');
     handleMenuClose();
   };
 
-  const handleDelete = () => {
+  const handleDelete = (event: React.MouseEvent) => {
+    event.stopPropagation();
     console.log('Delete clicked for note:');
     handleMenuClose();
   };
 
-  const handleAddToFavorite = () => {
+  const handleAddToFavorite = (event: React.MouseEvent) => {
+    event.stopPropagation();
     console.log('Add to Favorite clicked for note:');
     handleMenuClose();
   };
@@ -37,6 +45,7 @@ export default function ThreeDots() {
   return (<>
     <IconButton
       onClick={handleMenuClick}
+      onMouseDown={(e) => e.stopPropagation()}
       sx={{
         display: 'flex',
         justifyContent: 'space-between',
