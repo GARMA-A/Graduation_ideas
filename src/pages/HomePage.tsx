@@ -1,7 +1,7 @@
 import { Box, Paper, Stack, useMediaQuery, useTheme } from "@mui/material";
 import NavBar from "../features/Layout/NavBar";
 import { ColorModeProvider } from "../contexts/ThemeContext";
-import BottomNavBar from "../features/Layout//BottomNavBar";
+import BottomNavBar from "../features/Layout/BottomNavBar";
 import AddNote from "../features/Notes/AddNote";
 import { NotePopUpWindow } from "../features/Notes/NotePopUpWindow";
 import SearchBar from "../features/Notes/SearchBar";

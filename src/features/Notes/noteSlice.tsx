@@ -14,12 +14,11 @@ interface Note {
 interface NoteState {
   notes: Array<Note>;
   currentNote: Note;
-  menueIsOpen: boolean;
+  menuIsOpen: boolean;
   isPopupWindowActive: boolean;
   PopUpWindowOpenFromMenuToEdit: boolean;
   disapleTextFields: boolean;
 }
-
 const initialState: NoteState = {
   notes: [],
   currentNote: {
@@ -31,7 +30,7 @@ const initialState: NoteState = {
     showEditView: false,
     showCreateView: false,
   },
-  menueIsOpen: false,
+  menuIsOpen: false,
   isPopupWindowActive: false,
   PopUpWindowOpenFromMenuToEdit: false,
   disapleTextFields: false
@@ -88,9 +87,11 @@ const noteSlice = createSlice({
     },
     closePopUpWindow(state) {
       state.isPopupWindowActive = false;
+      state.disapleTextFields = false;
     },
     openPopUpWindow(state) {
       state.isPopupWindowActive = true;
+      state.disapleTextFields = false;
     },
     openPopUpWindowAsEdit(state) {
       state.PopUpWindowOpenFromMenuToEdit = true;
@@ -112,7 +113,7 @@ const noteSlice = createSlice({
       }
     },
     setMenuIsActive: (state, action) => {
-      state.menueIsOpen = action.payload as boolean;
+      state.menuIsOpen = action.payload as boolean;
     },
     toggleEditView: (state, action) => {
       const id = (action.payload as { id: string }).id;

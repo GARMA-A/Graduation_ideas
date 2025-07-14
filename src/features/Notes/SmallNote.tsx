@@ -51,7 +51,7 @@ export default function SmallNote({ noteId }: { noteId: string }) {
     (state) => state.notes.notes.find((n) => n.id === noteId)
   )!;
 
-  const menuIsOpen = useAppSelector((state) => state.notes.menueIsOpen);
+  const menuIsOpen = useAppSelector((state) => state.notes.menuIsOpen);
 
   function handleClick() {
     console.log("small note clicked");
