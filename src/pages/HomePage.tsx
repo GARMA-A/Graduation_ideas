@@ -3,8 +3,7 @@ import NavBar from "../features/Layout/NavBar";
 import { ColorModeProvider } from "../contexts/ThemeContext";
 import BottomNavBar from "../features/Layout//BottomNavBar";
 import AddNote from "../features/Notes/AddNote";
-import AddNotePopUpWindow from "../features/Notes/NotePopUpWindow";
-import { useState } from "react";
+import { NotePopUpWindow } from "../features/Notes/NotePopUpWindow";
 import SearchBar from "../features/Notes/SearchBar";
 import FullNoteView from "../features/Notes/FullNoteView";
 import { useSelector } from 'react-redux';
@@ -19,11 +18,11 @@ export default function HomePage() {
 
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down('sm'));
-  const [open, setOpen] = useState(false);
+
 
   const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-  const currentNote = useAppSelector((state) => state.notes.currentNote)
-
+  const { currentNote: currentNote, isPopupWindowActive } = useAppSelector((state) => state.notes)
+  const allNotes = useAppSelector((state) => state.notes.notes);
 
 
   return (
@@ -38,7 +37,7 @@ export default function HomePage() {
         gap={1}
         overflow="hidden"
       >
-        <AddNotePopUpWindow open={open} setOpen={setOpen} />
+        {isPopupWindowActive && < NotePopUpWindow />}
         <Stack
           direction="column"
           justifyContent="center"
@@ -54,6 +53,10 @@ export default function HomePage() {
 
 
             {!currentNote.showFullView && <SmallNoteContainer>
+
+              {allNotes.map((note) =>
+                <SmallNote id={note.id} title={note.title} description={note.description} favorite={note.favorite} />
+              )}
 
               <SmallNote id="1" title="The first title for the first note in my app"
 
@@ -84,7 +87,7 @@ export default function HomePage() {
 
           </Paper>
         </Stack>
-        <AddNote open={open} setOpen={setOpen} />
+        <AddNote />
 
 
       </Box>

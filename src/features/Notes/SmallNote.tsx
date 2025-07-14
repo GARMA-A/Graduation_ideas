@@ -58,6 +58,7 @@ export default function SmallNote({ id, title, description, favorite }: SmallNot
   const menuIsOpen = useAppSelector((state) => state.notes.menueIsOpen);
 
   function handleClick() {
+    console.log("small note clicked");
     if (menuIsOpen) return;
     dispatch(setCurrentNote({
       id: id,

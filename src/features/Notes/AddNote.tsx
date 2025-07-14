@@ -1,17 +1,17 @@
 import { Fab, IconButton } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
-
-type AddNoteProps = {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-};
+import type { AppDispatch } from "../../store";
+import { useDispatch } from "react-redux";
+import { openPopUpWindow } from "./noteSlice";
 
 
-export default function AddNote({ open, setOpen }: AddNoteProps) {
+export default function AddNote() {
 
+  const dispatch = useDispatch<AppDispatch>();
   function handleClick() {
-    setOpen(!open);
+    dispatch(openPopUpWindow());
   }
+
   return (<>
 
     <Fab
