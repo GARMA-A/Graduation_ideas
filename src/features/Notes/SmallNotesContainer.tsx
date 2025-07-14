@@ -1,10 +1,13 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import type { RootState } from "../../store";
+import { useSelector, type TypedUseSelectorHook } from "react-redux";
+import SmallNote from "./SmallNote";
 
-type SmallNoteContainerProps = {
-  children: React.ReactNode;
-};
 
-export default function SmallNoteContainer({ children }: SmallNoteContainerProps) {
+export default function SmallNoteContainer() {
+
+  const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+  const { notes } = useAppSelector((state) => state.notes);
 
   return (
     <Box
@@ -13,7 +16,7 @@ export default function SmallNoteContainer({ children }: SmallNoteContainerProps
       alignItems="stretch"
       gap={1}
       sx={{
-        width: { xs: '100%', sm: '100%', md: '80vw', lg: '65vw' },
+        width: { xs: '90vw', sm: '80vw', md: '70vw', lg: '65vw' },
         maxHeight: '400px',
         overflowY: 'auto',
         '&::-webkit-scrollbar': {
@@ -25,9 +28,15 @@ export default function SmallNoteContainer({ children }: SmallNoteContainerProps
         },
       }}
     >
-      {children}
-    </Box >
+      {notes.length === 0 && <Typography variant="h3" color="textSecondary" align="center" >
+        There is no notes yet!
+      </Typography>
+      }
+      {notes.map((note) => (
+        <SmallNote key={note.id} noteId={note.id} />
+      ))}
 
+    </Box>
   );
 
 }

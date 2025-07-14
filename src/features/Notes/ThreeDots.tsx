@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { IconButton, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useDispatch } from 'react-redux';
-import { openPopUpWindowAsEdit, remove, setMenuIsActive } from './noteSlice';
+import { preparDeletePopUpWindow, prepareEditPopUpWindow, remove, setMenuIsActive } from './noteSlice';
 import type { AppDispatch } from '../../store';
+import type { NoteType } from './NoteType';
 
-export default function ThreeDots({ id }: { id: string }) {
+
+
+export default function ThreeDots({ propNote }: { propNote: NoteType }) {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const dispatch = useDispatch<AppDispatch>();
@@ -21,26 +24,29 @@ export default function ThreeDots({ id }: { id: string }) {
     dispatch(setMenuIsActive(true));
     setAnchorEl(event.currentTarget);
   };
-  const handleMenuClose = () => {
+  const handleMenuClose = (event: React.MouseEvent) => {
+    event.stopPropagation();
     dispatch(setMenuIsActive(false));
     setAnchorEl(null);
   };
   const handleEdit = (event: React.MouseEvent) => {
     event.stopPropagation();
-    handleMenuClose();
-    dispatch(openPopUpWindowAsEdit());
+    handleMenuClose(event);
+    dispatch(prepareEditPopUpWindow(propNote));
+    console.log("edit the note done")
   };
 
   const handleDelete = (event: React.MouseEvent) => {
     event.stopPropagation();
-    handleMenuClose();
-    dispatch(remove(id));
+    handleMenuClose(event);
+    dispatch(preparDeletePopUpWindow(propNote));
+    dispatch(remove(propNote));
   };
 
   const handleAddToFavorite = (event: React.MouseEvent) => {
     event.stopPropagation();
     console.log('Add to Favorite clicked for note:');
-    handleMenuClose();
+    handleMenuClose(event);
   };
 
   return (<>
