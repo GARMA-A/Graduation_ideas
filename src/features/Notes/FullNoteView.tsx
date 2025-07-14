@@ -14,45 +14,57 @@ import {
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { grey } from '@mui/material/colors';
 import CloseIcon from '@mui/icons-material/Close';
+import { useDispatch } from 'react-redux';
+import { setMenuIsActive, toggleShowFullView } from '../Notes/noteSlice';
+import { useSelector } from 'react-redux';
+import type { TypedUseSelectorHook } from 'react-redux';
+import type { RootState } from '../../store';
 
-interface FullViewNoteProps {
-  title: string;
-  description: string;
-}
+// interface FullViewNoteProps {
+//   title: string;
+//   description: string;
+// }
 
 
-export default function FullNoteView({ title, description }: FullViewNoteProps) {
+export default function FullNoteView() {
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down('sm'));
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
+  const dispatch = useDispatch();
+
+  const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+  const currentNote = useAppSelector((state) => state.notes.currentNote);
+
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
     setAnchorEl(event.currentTarget);
+    dispatch(setMenuIsActive(true));
   };
 
   const handleMenuClose = () => {
+    dispatch(setMenuIsActive(false));
     setAnchorEl(null);
   };
 
   const handleEdit = () => {
-    console.log('Edit clicked for note:', title);
+    console.log('Edit clicked for note:', currentNote.title);
     handleMenuClose();
   };
 
   const handleDelete = () => {
-    console.log('Delete clicked for note:', title);
+    console.log('Delete clicked for note:', currentNote.title);
     handleMenuClose();
   };
 
   const handleAddToFavorite = () => {
-    console.log('Add to Favorite clicked for note:', title);
+    console.log('Add to Favorite clicked for note:', currentNote.title);
     handleMenuClose();
   };
 
   const handleClose = () => {
-    console.log('Close clicked');
+    dispatch(toggleShowFullView());
   };
 
   return (
@@ -108,7 +120,7 @@ export default function FullNoteView({ title, description }: FullViewNoteProps) 
                 py: 0.5,
               }}
             >
-              {title}
+              {currentNote.title || 'Untitled Note'}
 
             </Typography>
           </Box>
@@ -130,7 +142,7 @@ export default function FullNoteView({ title, description }: FullViewNoteProps) 
           wordBreak: 'break-word',
         }}
       >
-        <Typography sx={{ whiteSpace: 'pre-wrap' }}>{description}</Typography>
+        <Typography sx={{ whiteSpace: 'pre-wrap' }}>{currentNote.description}</Typography>
         <IconButton
           onClick={handleClose}
           sx={{
