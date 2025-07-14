@@ -17,12 +17,6 @@ import type { RootState } from '../../store';
 
 
 
-interface SmallNoteProps {
-  id: string;
-  title: string,
-  description: string,
-  favorite: boolean,
-}
 
 function getFirst5Words(text: string) {
   return text.split(/\s+/).slice(0, 5).join(' ') + '...';
@@ -46,14 +40,16 @@ function getTruncatedTitle(title: string, isSm: boolean, isMd: boolean) {
   return title.length > 25 ? getFirst25Words(title) : title;
 }
 
-export default function SmallNote({ id, title, description, favorite }: SmallNoteProps) {
+export default function SmallNote({ noteId }: { noteId: string }) {
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down('sm'));
   const isMd = useMediaQuery(theme.breakpoints.between('sm', 'md'));
-
   const dispatch = useDispatch();
 
   const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+  const note = useAppSelector(
+    (state) => state.notes.notes.find((n) => n.id === noteId)
+  )!;
 
   const menuIsOpen = useAppSelector((state) => state.notes.menueIsOpen);
 
@@ -61,10 +57,10 @@ export default function SmallNote({ id, title, description, favorite }: SmallNot
     console.log("small note clicked");
     if (menuIsOpen) return;
     dispatch(setCurrentNote({
-      id: id,
-      title: title,
-      description: description,
-      favorite: favorite,
+      id: note.id,
+      title: note.title,
+      description: note.description,
+      favorite: note.favorite,
       showFullView: true,
       showEditView: false,
       showCreateView: false
@@ -91,12 +87,12 @@ export default function SmallNote({ id, title, description, favorite }: SmallNot
       >
         <CardHeader
           action={
-            <ThreeDots />
+            <ThreeDots propNote={note} />
           }
           title={
             <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
               <Typography sx={{ flex: 1, mr: 2 }}>
-                {getTruncatedTitle(title, isSm, isMd)}
+                {getTruncatedTitle(note.title, isSm, isMd)}
               </Typography>
             </Box>
           }
@@ -109,7 +105,7 @@ export default function SmallNote({ id, title, description, favorite }: SmallNot
           }}
         />
         <CardContent>
-          <Typography>{description}</Typography>
+          <Typography>{note.description}</Typography>
         </CardContent>
       </Card>
     </ButtonBase>

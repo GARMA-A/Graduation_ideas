@@ -8,6 +8,7 @@ interface Note {
   showFullView: boolean;
   showEditView: boolean;
   showCreateView: boolean;
+
 }
 
 interface NoteState {
@@ -16,6 +17,7 @@ interface NoteState {
   menueIsOpen: boolean;
   isPopupWindowActive: boolean;
   PopUpWindowOpenFromMenuToEdit: boolean;
+  disapleTextFields: boolean;
 }
 
 const initialState: NoteState = {
@@ -32,6 +34,7 @@ const initialState: NoteState = {
   menueIsOpen: false,
   isPopupWindowActive: false,
   PopUpWindowOpenFromMenuToEdit: false,
+  disapleTextFields: false
 };
 
 
@@ -39,24 +42,49 @@ const noteSlice = createSlice({
   name: 'notes',
   initialState,
   reducers: {
+    readAllNotes: (state, action) => {
+      const notes = action.payload as Array<Note>;
+      state.notes = notes;
+    },
     create: (state, action) => {
-      state.notes.push(action.payload as Note);
-      closePopUpWindow();
+      const newNote = action.payload as Note;
+      state.notes = [...state.notes, newNote];
     },
     remove: (state, action) => {
       state.notes = state.notes.filter(note => note.id !== (action.payload as { id: string }).id);
     },
     update: (state, action) => {
       const updatedNote = action.payload as Note;
-      const index = state.notes.findIndex(note => note.id === updatedNote.id);
-      if (index !== -1) {
-        state.notes[index] = updatedNote;
+      state.notes = state.notes.map(note =>
+        note.id === updatedNote.id ? { ...updatedNote } : note
+      );
+
+      if (state.currentNote.id === updatedNote.id) {
+        state.currentNote = { ...updatedNote };
       }
-      closePopUpWindowAsEdit();
     },
     setCurrentNote: (state, action) => {
       const note = action.payload as Note;
       state.currentNote = note;
+    },
+    prepareEditPopUpWindow: (state, action) => {
+      const note = action.payload as Note;
+      state.currentNote = note;
+      state.PopUpWindowOpenFromMenuToEdit = true;
+      state.isPopupWindowActive = true;
+
+    },
+    preparDeletePopUpWindow: (state, action) => {
+      const note = action.payload as Note;
+      state.currentNote = note;
+      state.PopUpWindowOpenFromMenuToEdit = true;
+      state.isPopupWindowActive = true;
+      state.disapleTextFields = true;
+    },
+    closeDeletePopUpWindow: (state) => {
+      state.PopUpWindowOpenFromMenuToEdit = false;
+      state.isPopupWindowActive = false;
+      state.disapleTextFields = false;
     },
     closePopUpWindow(state) {
       state.isPopupWindowActive = false;
@@ -119,7 +147,11 @@ export const {
   openPopUpWindow,
   closePopUpWindow,
   openPopUpWindowAsEdit,
-  closePopUpWindowAsEdit
+  closePopUpWindowAsEdit,
+  prepareEditPopUpWindow,
+  readAllNotes,
+  preparDeletePopUpWindow,
+  closeDeletePopUpWindow
 } = noteSlice.actions;
 
 

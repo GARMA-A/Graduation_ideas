@@ -6,11 +6,32 @@ import AddNote from "../features/Notes/AddNote";
 import { NotePopUpWindow } from "../features/Notes/NotePopUpWindow";
 import SearchBar from "../features/Notes/SearchBar";
 import FullNoteView from "../features/Notes/FullNoteView";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import type { TypedUseSelectorHook } from 'react-redux';
-import type { RootState } from '../store';
+import type { AppDispatch, RootState } from '../store';
 import SmallNoteContainer from "../features/Notes/SmallNotesContainer";
-import SmallNote from "../features/Notes/SmallNote";
+import { readAllNotes } from "../features/Notes/noteSlice";
+import { useEffect } from "react";
+
+type Notes = {
+  id: string;
+  title: string;
+  description: string;
+  favorite: boolean;
+}
+
+const NotesArrayForTesting: Notes[] = [
+  { id: '1', title: 'Note 1', description: 'This is the first note', favorite: false },
+  { id: '2', title: 'Note 2', description: 'This is the second note', favorite: true },
+  { id: '3', title: 'Note 3', description: 'This is the third note', favorite: false },
+  { id: '4', title: 'Note 4', description: 'This is the fourth note', favorite: true },
+  { id: '5', title: 'Note 5', description: 'This is the fifth note', favorite: false },
+  { id: '6', title: 'Note 6', description: 'This is the sixth note', favorite: true },
+  { id: '7', title: 'Note 7', description: 'This is the seventh note', favorite: false },
+  { id: '8', title: 'Note 8', description: 'This is the eighth note', favorite: true },
+  { id: '9', title: 'Note 9', description: 'This is the ninth note', favorite: false },
+  { id: '10', title: 'Note 10', description: 'This is the tenth note', favorite: true },
+];
 
 
 
@@ -21,8 +42,14 @@ export default function HomePage() {
 
 
   const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-  const { currentNote: currentNote, isPopupWindowActive } = useAppSelector((state) => state.notes)
-  const allNotes = useAppSelector((state) => state.notes.notes);
+  const { currentNote: currentNote, isPopupWindowActive, PopUpWindowOpenFromMenuToEdit } = useAppSelector((state) => state.notes)
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(readAllNotes(NotesArrayForTesting));
+  }, [dispatch]);
+
 
 
   return (
@@ -37,7 +64,7 @@ export default function HomePage() {
         gap={1}
         overflow="hidden"
       >
-        {isPopupWindowActive && < NotePopUpWindow />}
+        {isPopupWindowActive && < NotePopUpWindow openForEdit={PopUpWindowOpenFromMenuToEdit} />}
         <Stack
           direction="column"
           justifyContent="center"
@@ -46,56 +73,17 @@ export default function HomePage() {
           sx={{ padding: '16px' }}>
 
           <SearchBar />
-          <Paper sx={{ padding: '32px' }} >
-            {/*the full view will add here */}
+          {!isPopupWindowActive && !PopUpWindowOpenFromMenuToEdit &&
+            <Paper sx={{ padding: '32px' }} >
+              {currentNote.showFullView && <FullNoteView />}
 
-            {currentNote.showFullView && <FullNoteView />}
-
-
-            {!currentNote.showFullView && <SmallNoteContainer>
-
-              {allNotes.map((note) =>
-                <SmallNote id={note.id} title={note.title} description={note.description} favorite={note.favorite} />
-              )}
-
-              <SmallNote id="1" title="The first title for the first note in my app"
-
-                description="this is a description for the second title"
-                favorite={true}
-              />
-              <SmallNote id="2" title="the secont title "
-                description="this is a description for the second title"
-                favorite={false}
-              />
-              <SmallNote id="3" title="the third title this title will ne used to check the how many words i can put in the title without over lap"
-                description="this is a description for the second title"
-                favorite={false}
-              />
-
-              <SmallNote id="4" title="the third title this title will ne used to check the how many words i can put in the title without over lap"
-                description="this is a description for the second title"
-                favorite={false}
-              />
-
-              <SmallNote id="5" title="the third title this title will ne used to check the how many words i can put in the title without over lap"
-                description="this is a description for the second title"
-                favorite={false}
-              />
-
-
-            </SmallNoteContainer>}
-
-          </Paper>
+              {!currentNote.showFullView && <SmallNoteContainer />}
+            </Paper>
+          }
         </Stack>
         <AddNote />
 
-
       </Box>
-
-
-
-
     </ColorModeProvider >);
-
 }
 

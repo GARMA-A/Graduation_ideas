@@ -1,38 +1,44 @@
 import { Box, Button, Dialog, DialogContent, TextField, useMediaQuery, useTheme } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
 import type { TypedUseSelectorHook } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import type { RootState, AppDispatch } from '../../store';
-import { closePopUpWindow, closePopUpWindowAsEdit, create, update } from "./noteSlice";
-
-
-type noteType = {
-  id: string,
-  title: string,
-  description: string,
-  favorite: boolean
-}
+import type { NoteType } from '../Notes/NoteType';
+import { closeDeletePopUpWindow, closePopUpWindow, closePopUpWindowAsEdit, create, remove, update } from "./noteSlice";
 
 
 
-export function NotePopUpWindow({ openForEdit = false }: { openForEdit?: boolean }) {
+
+
+export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
 
 
   const dispatch = useDispatch<AppDispatch>();
 
   const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
-  const { currentNote, isPopupWindowActive } = useAppSelector((state) => state.notes);
+  const { currentNote, isPopupWindowActive, disapleTextFields } = useAppSelector((state) => state.notes);
 
-  const [note, setNote] = useState<noteType>({
-    id: "",
+  const [note, setNote] = useState<NoteType>({
+    id: openForEdit ? currentNote.id : "",
     title: openForEdit ? currentNote.title : "",
     description: openForEdit ? currentNote.description : "",
-    favorite: false
+    favorite: openForEdit ? currentNote.favorite : false,
   });
+
+  useEffect(() => {
+    if (openForEdit && currentNote) {
+      setNote({
+        id: currentNote.id,
+        title: currentNote.title,
+        description: currentNote.description,
+        favorite: currentNote.favorite,
+      });
+    }
+  }, [openForEdit, currentNote]);
 
 
   const theme = useTheme();
@@ -47,17 +53,18 @@ export function NotePopUpWindow({ openForEdit = false }: { openForEdit?: boolean
     if (openForEdit) {
       dispatch(update(note));
     } else {
-      note.id = note.title
+      note.id = Date.now().toString();
       note.favorite = false;
       dispatch(create(note))
     }
-
-    console.log("Submitting note:", note);
+    handleClose();
   }
 
   function handleClose() {
     if (openForEdit) {
       dispatch(closePopUpWindowAsEdit());
+    } else if (disapleTextFields) {
+      dispatch(closeDeletePopUpWindow());
     } else {
       dispatch(closePopUpWindow());
     }
@@ -70,7 +77,13 @@ export function NotePopUpWindow({ openForEdit = false }: { openForEdit?: boolean
         onClose={handleClose}
         fullScreen={isMobile}
         fullWidth
-        maxWidth="sm"
+        maxWidth="md"
+        sx={{
+          '& .MuiDialog-container': {
+            alignItems: isMobile ? 'stretch' : 'flex-start',
+            paddingTop: isMobile ? 0 : '10%',
+          }
+        }}
       >
         <DialogContent
           sx={{
@@ -95,6 +108,7 @@ export function NotePopUpWindow({ openForEdit = false }: { openForEdit?: boolean
             }}
             value={note.title}
             onChange={(e) => setNote({ ...note, title: e.target.value })}
+            disabled={disapleTextFields ? true : false}
           />
 
           <TextField
@@ -103,6 +117,7 @@ export function NotePopUpWindow({ openForEdit = false }: { openForEdit?: boolean
             multiline
             minRows={8}
             variant="outlined"
+            disabled={disapleTextFields ? true : false}
             sx={{
               width: { xs: '90%', sm: '500px' },
 
@@ -135,7 +150,7 @@ export function NotePopUpWindow({ openForEdit = false }: { openForEdit?: boolean
               }}
               onClick={handleSubmitNote}
             >
-              Create
+              {openForEdit ? "Update" : "Create"}
             </Button>
 
             <Button

@@ -20,11 +20,6 @@ import { useSelector } from 'react-redux';
 import type { TypedUseSelectorHook } from 'react-redux';
 import type { RootState } from '../../store';
 
-// interface FullViewNoteProps {
-//   title: string;
-//   description: string;
-// }
-
 
 export default function FullNoteView() {
   const theme = useTheme();
@@ -143,19 +138,20 @@ export default function FullNoteView() {
         }}
       >
         <Typography sx={{ whiteSpace: 'pre-wrap' }}>{currentNote.description}</Typography>
-        <IconButton
-          onClick={handleClose}
-          sx={{
-            position: 'relative',
-            bottom: 2,
-            left: 'calc(100% - 48px)',
-            color: 'white',
-          }}
-          aria-label="close"
-        >
-          <CloseIcon />
-        </IconButton>
       </CardContent>
+
+      <IconButton
+        onClick={handleClose}
+        sx={{
+          position: 'relative',
+          bottom: 6,
+          left: 'calc(100% - 48px)',
+          color: 'white',
+        }}
+        aria-label="close"
+      >
+        <CloseIcon />
+      </IconButton>
     </Card>
   );
 }
