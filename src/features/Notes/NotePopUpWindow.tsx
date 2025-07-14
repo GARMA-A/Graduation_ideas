@@ -1,13 +1,13 @@
 import { Box, Button, Dialog, DialogContent, TextField, useMediaQuery, useTheme } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector } from 'react-redux';
 import type { TypedUseSelectorHook } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import type { RootState, AppDispatch } from '../../store';
 import type { NoteType } from '../Notes/NoteType';
-import { closeDeletePopUpWindow, closePopUpWindow, closePopUpWindowAsEdit, create, remove, update } from "./noteSlice";
+import { closeDeletePopUpWindow, closePopUpWindow, closePopUpWindowAsEdit, create, update } from "./noteSlice";
 
 
 
@@ -29,16 +29,16 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
     favorite: openForEdit ? currentNote.favorite : false,
   });
 
-  useEffect(() => {
-    if (openForEdit && currentNote) {
-      setNote({
-        id: currentNote.id,
-        title: currentNote.title,
-        description: currentNote.description,
-        favorite: currentNote.favorite,
-      });
-    }
-  }, [openForEdit, currentNote]);
+  // useEffect(() => {
+  //   if (openForEdit && currentNote) {
+  //     setNote({
+  //       id: currentNote.id,
+  //       title: currentNote.title,
+  //       description: currentNote.description,
+  //       favorite: currentNote.favorite,
+  //     });
+  //   }
+  // }, [openForEdit, currentNote]);
 
 
   const theme = useTheme();
@@ -150,7 +150,8 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
               }}
               onClick={handleSubmitNote}
             >
-              {openForEdit ? "Update" : "Create"}
+              {openForEdit && "Confirm"}
+              {!openForEdit && !disapleTextFields && "Create"}
             </Button>
 
             <Button
