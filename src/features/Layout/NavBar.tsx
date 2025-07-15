@@ -5,17 +5,31 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { WbSunny, Brightness2 } from '@mui/icons-material';
 import EditNoteIcon from '@mui/icons-material/EditNote';
-import { FavoriteOutlined } from '@mui/icons-material';
 import { useColorMode } from '../../contexts/useColorMode';
 import { useMediaQuery, useTheme } from '@mui/material';
+import Favorite from '../Notes/Fovorite';
+import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux';
+import type { AppDispatch } from '../../store';
+import { setFavoriteFilterActive } from '../Notes/noteSlice';
+import type { RootState } from '../../store';
 
 
 
 export default function NavBar() {
   const { mode, toggleMode } = useColorMode();
-
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const dispatch = useDispatch<AppDispatch>();
+  const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+  const favoriteFilterActive = useAppSelector((state) => state.notes.favoriteFilterActive)
+
+  function handleFavoriteClick() {
+    if (favoriteFilterActive) {
+      dispatch(setFavoriteFilterActive(false));
+    } else {
+      dispatch(setFavoriteFilterActive(true));
+    }
+  }
 
   return (
     <Box sx={{ flexGrow: 1 }} >
@@ -27,6 +41,7 @@ export default function NavBar() {
             color="inherit"
             ria-label="open drawer"
             sx={{ mr: 2 }}
+            onClick={() => dispatch(setFavoriteFilterActive(false))}
           >
             <EditNoteIcon />
 
@@ -43,11 +58,9 @@ export default function NavBar() {
           <IconButton color="inherit" onClick={toggleMode}>
             {mode === 'dark' ? <WbSunny /> : <Brightness2 />}
           </IconButton>
-          <Box >
-            {!isSm && < IconButton color="inherit"><FavoriteOutlined />
-            </IconButton>}
-
-          </Box>
+          <IconButton onClick={handleFavoriteClick}>
+            {!isSm && <Favorite purpose='filter' favorite={favoriteFilterActive} />}
+          </IconButton>
         </Toolbar>
       </AppBar>
     </Box >

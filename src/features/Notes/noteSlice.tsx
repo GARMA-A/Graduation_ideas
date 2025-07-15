@@ -18,6 +18,7 @@ interface NoteState {
   isPopupWindowActive: boolean;
   PopUpWindowOpenFromMenuToEdit: boolean;
   disapleTextFields: boolean;
+  favoriteFilterActive: boolean;
 }
 const initialState: NoteState = {
   notes: [],
@@ -33,7 +34,8 @@ const initialState: NoteState = {
   menuIsOpen: false,
   isPopupWindowActive: false,
   PopUpWindowOpenFromMenuToEdit: false,
-  disapleTextFields: false
+  disapleTextFields: false,
+  favoriteFilterActive: false,
 };
 
 
@@ -112,6 +114,9 @@ const noteSlice = createSlice({
         note.favorite = !note.favorite;
       }
     },
+    setFavoriteFilterActive: (state, action) => {
+      state.favoriteFilterActive = action.payload as boolean;
+    },
     setMenuIsActive: (state, action) => {
       state.menuIsOpen = action.payload as boolean;
     },
@@ -152,7 +157,8 @@ export const {
   prepareEditPopUpWindow,
   readAllNotes,
   preparDeletePopUpWindow,
-  closeDeletePopUpWindow
+  closeDeletePopUpWindow,
+  setFavoriteFilterActive
 } = noteSlice.actions;
 
 

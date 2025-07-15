@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import {
@@ -8,55 +7,25 @@ import {
   Box,
   IconButton,
   Typography,
-  Menu,
-  MenuItem,
 } from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { grey } from '@mui/material/colors';
 import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch } from 'react-redux';
-import { setMenuIsActive, toggleShowFullView } from '../Notes/noteSlice';
+import { toggleShowFullView } from '../Notes/noteSlice';
 import { useSelector } from 'react-redux';
 import type { TypedUseSelectorHook } from 'react-redux';
 import type { RootState } from '../../store';
+import ThreeDots from './ThreeDots';
 
 
 export default function FullNoteView() {
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down('sm'));
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
 
   const dispatch = useDispatch();
 
   const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
   const currentNote = useAppSelector((state) => state.notes.currentNote);
-
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
-    event.stopPropagation();
-    setAnchorEl(event.currentTarget);
-    dispatch(setMenuIsActive(true));
-  };
-
-  const handleMenuClose = () => {
-    dispatch(setMenuIsActive(false));
-    setAnchorEl(null);
-  };
-
-  const handleEdit = () => {
-    console.log('Edit clicked for note:', currentNote.title);
-    handleMenuClose();
-  };
-
-  const handleDelete = () => {
-    console.log('Delete clicked for note:', currentNote.title);
-    handleMenuClose();
-  };
-
-  const handleAddToFavorite = () => {
-    console.log('Add to Favorite clicked for note:', currentNote.title);
-    handleMenuClose();
-  };
 
   const handleClose = () => {
     dispatch(toggleShowFullView());
@@ -73,33 +42,7 @@ export default function FullNoteView() {
       <CardHeader
         action={
           <>
-            <IconButton
-              onClick={handleMenuClick}
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: isSm ? 'start' : 'center',
-              }}
-              aria-label="settings"
-              aria-controls={open ? 'settings-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
-            >
-              <MoreVertIcon />
-            </IconButton>
-            <Menu
-              id="settings-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleMenuClose}
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-              sx={{ zIndex: 1000 }}
-            >
-              <MenuItem onClick={handleEdit}>Edit</MenuItem>
-              <MenuItem onClick={handleDelete}>Delete</MenuItem>
-              <MenuItem onClick={handleAddToFavorite}>Add to Favorite</MenuItem>
-            </Menu>
+            <ThreeDots propNote={currentNote} />
           </>
         }
         title={
