@@ -19,6 +19,7 @@ interface NoteState {
   PopUpWindowOpenFromMenuToEdit: boolean;
   disapleTextFields: boolean;
   favoriteFilterActive: boolean;
+  searchQuery: string;
 }
 const initialState: NoteState = {
   notes: [],
@@ -36,6 +37,7 @@ const initialState: NoteState = {
   PopUpWindowOpenFromMenuToEdit: false,
   disapleTextFields: false,
   favoriteFilterActive: false,
+  searchQuery: '',
 };
 
 
@@ -95,6 +97,13 @@ const noteSlice = createSlice({
     openPopUpWindow(state) {
       state.isPopupWindowActive = true;
       state.disapleTextFields = false;
+    },
+    setSearchQuery: (state, action) => {
+      const query = action.payload as string;
+      state.searchQuery = query;
+    },
+    emptySearchQuery: (state) => {
+      state.searchQuery = '';
     },
     openPopUpWindowAsEdit(state) {
       state.PopUpWindowOpenFromMenuToEdit = true;
@@ -160,7 +169,9 @@ export const {
   readAllNotes,
   preparDeletePopUpWindow,
   closeDeletePopUpWindow,
-  setFavoriteFilterActive
+  setFavoriteFilterActive,
+  setSearchQuery,
+  emptySearchQuery
 } = noteSlice.actions;
 
 

@@ -10,7 +10,7 @@ export default function SmallNoteContainer() {
   const notes = useAppSelector((state) => state.notes.notes);
   const favoriteFilterActive = useAppSelector((state) => state.notes.favoriteFilterActive);
   const filteredNotes = notes.filter(note => note.favorite);
-
+  const searchQuery = useAppSelector((state) => state.notes.searchQuery);
   return (
     <Box
       display="flex"
@@ -18,8 +18,7 @@ export default function SmallNoteContainer() {
       alignItems="stretch"
       gap={1}
       sx={{
-
-        maxHeight: '400px',
+        maxHeight: { sm: 'calc(60vh - 64px)', md: 400, lg: 400 },
         overflowY: 'auto',
         '&::-webkit-scrollbar': {
           width: '8px',
@@ -38,12 +37,23 @@ export default function SmallNoteContainer() {
         There is no favorite notes yet !
       </Typography>
       }
-      {!favoriteFilterActive &&
+      {!favoriteFilterActive && searchQuery.length === 0 &&
         notes.map((note) => (
           <SmallNote key={note.id} note={note} />
         ))}
-      {favoriteFilterActive &&
+      {!favoriteFilterActive && searchQuery.length > 0 &&
+        notes.filter(note => note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          note.description.toLowerCase().includes(searchQuery.toLowerCase())
+        ).map(note => <SmallNote key={note.id} note={note} />)
+      }
+      {favoriteFilterActive && searchQuery.length === 0 &&
         filteredNotes.map(note => <SmallNote key={note.id} note={note} />)
+      }
+
+      {favoriteFilterActive && searchQuery.length > 0 &&
+        filteredNotes.filter(note => note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          note.description.toLowerCase().includes(searchQuery.toLowerCase())
+        ).map(note => <SmallNote key={note.id} note={note} />)
       }
 
     </Box>
