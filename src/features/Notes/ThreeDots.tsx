@@ -43,11 +43,6 @@ export default function ThreeDots({ propNote }: { propNote: NoteType }) {
     dispatch(remove(propNote));
   };
 
-  const handleAddToFavorite = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    console.log('Add to Favorite clicked for note:');
-    handleMenuClose(event);
-  };
 
   return (<>
     <IconButton
@@ -76,7 +71,6 @@ export default function ThreeDots({ propNote }: { propNote: NoteType }) {
     >
       <MenuItem onClick={handleEdit}>Edit</MenuItem>
       <MenuItem onClick={handleDelete}>Delete</MenuItem>
-      <MenuItem onClick={handleAddToFavorite}>Add to Favorite</MenuItem>
     </Menu>
   </>
   );

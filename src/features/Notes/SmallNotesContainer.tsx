@@ -9,6 +9,7 @@ export default function SmallNoteContainer() {
   const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
   const notes = useAppSelector((state) => state.notes.notes);
   const favoriteFilterActive = useAppSelector((state) => state.notes.favoriteFilterActive);
+  const filteredNotes = notes.filter(note => note.favorite);
 
   return (
     <Box
@@ -30,18 +31,19 @@ export default function SmallNoteContainer() {
       }}
     >
       {notes.length === 0 && <Typography variant="h3" color="textSecondary" align="center" >
-        There is no notes yet!
+        There is no notes yet !
+      </Typography>
+      }
+      {filteredNotes.length === 0 && favoriteFilterActive && <Typography variant="h3" color="textSecondary" align="center" >
+        There is no favorite notes yet !
       </Typography>
       }
       {!favoriteFilterActive &&
         notes.map((note) => (
           <SmallNote key={note.id} note={note} />
         ))}
-
       {favoriteFilterActive &&
-        notes
-          .filter(note => note.favorite)
-          .map(note => <SmallNote key={note.id} note={note} />)
+        filteredNotes.map(note => <SmallNote key={note.id} note={note} />)
       }
 
     </Box>
