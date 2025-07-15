@@ -42,7 +42,9 @@ export default function HomePage() {
 
 
   const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-  const { currentNote: currentNote, isPopupWindowActive, PopUpWindowOpenFromMenuToEdit } = useAppSelector((state) => state.notes)
+  const currentNote = useAppSelector((state) => state.notes.currentNote);
+  const isPopupWindowActive = useAppSelector((state) => state.notes.isPopupWindowActive);
+  const PopUpWindowOpenFromMenuToEdit = useAppSelector((state) => state.notes.PopUpWindowOpenFromMenuToEdit)
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -74,9 +76,12 @@ export default function HomePage() {
 
           <SearchBar />
           {!isPopupWindowActive && !PopUpWindowOpenFromMenuToEdit &&
-            <Paper sx={{ padding: '32px' }} >
+            <Paper sx={{
+              padding: '32px',
+              width: { xs: '100vw', sm: '80vw', md: '70vw', lg: '65vw' },
+            }}
+            >
               {currentNote.showFullView && <FullNoteView />}
-
               {!currentNote.showFullView && <SmallNoteContainer />}
             </Paper>
           }

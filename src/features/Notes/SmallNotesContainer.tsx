@@ -7,7 +7,8 @@ import SmallNote from "./SmallNote";
 export default function SmallNoteContainer() {
 
   const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-  const { notes } = useAppSelector((state) => state.notes);
+  const notes = useAppSelector((state) => state.notes.notes);
+  const favoriteFilterActive = useAppSelector((state) => state.notes.favoriteFilterActive);
 
   return (
     <Box
@@ -16,7 +17,7 @@ export default function SmallNoteContainer() {
       alignItems="stretch"
       gap={1}
       sx={{
-        width: { xs: '90vw', sm: '80vw', md: '70vw', lg: '65vw' },
+
         maxHeight: '400px',
         overflowY: 'auto',
         '&::-webkit-scrollbar': {
@@ -32,9 +33,16 @@ export default function SmallNoteContainer() {
         There is no notes yet!
       </Typography>
       }
-      {notes.map((note) => (
-        <SmallNote key={note.id} noteId={note.id} />
-      ))}
+      {!favoriteFilterActive &&
+        notes.map((note) => (
+          <SmallNote key={note.id} note={note} />
+        ))}
+
+      {favoriteFilterActive &&
+        notes
+          .filter(note => note.favorite)
+          .map(note => <SmallNote key={note.id} note={note} />)
+      }
 
     </Box>
   );

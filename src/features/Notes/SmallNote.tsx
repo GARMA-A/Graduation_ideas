@@ -9,11 +9,10 @@ import {
   ButtonBase,
 } from '@mui/material';
 import { grey } from '@mui/material/colors';
-import ThreeDots from './ThreeDots';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setCurrentNote } from './noteSlice';
-import type { TypedUseSelectorHook } from 'react-redux';
-import type { RootState } from '../../store';
+import type { NoteType } from './NoteType';
+import Favorite from './Fovorite';
 
 
 
@@ -40,22 +39,15 @@ function getTruncatedTitle(title: string, isSm: boolean, isMd: boolean) {
   return title.length > 25 ? getFirst25Words(title) : title;
 }
 
-export default function SmallNote({ noteId }: { noteId: string }) {
+export default function SmallNote({ note }: { note: NoteType }) {
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down('sm'));
   const isMd = useMediaQuery(theme.breakpoints.between('sm', 'md'));
   const dispatch = useDispatch();
 
-  const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-  const note = useAppSelector(
-    (state) => state.notes.notes.find((n) => n.id === noteId)
-  )!;
-
-  const menuIsOpen = useAppSelector((state) => state.notes.menuIsOpen);
 
   function handleClick() {
     console.log("small note clicked");
-    if (menuIsOpen) return;
     dispatch(setCurrentNote({
       id: note.id,
       title: note.title,
@@ -70,7 +62,6 @@ export default function SmallNote({ noteId }: { noteId: string }) {
   return (
     <ButtonBase
       onClick={handleClick}
-      disableRipple={menuIsOpen}
       sx={{
         textAlign: 'left',
         width: '100%',
@@ -87,7 +78,14 @@ export default function SmallNote({ noteId }: { noteId: string }) {
       >
         <CardHeader
           action={
-            <ThreeDots propNote={note} />
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: isSm ? 'start' : 'center',
+              }}>
+              <Favorite noteID={note.id} favorite={note.favorite} />
+            </Box>
           }
           title={
             <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>

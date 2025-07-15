@@ -17,10 +17,11 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
 
 
   const dispatch = useDispatch<AppDispatch>();
-
   const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+  const currentNote = useAppSelector((state) => state.notes.currentNote);
+  const isPopupWindowActive = useAppSelector((state) => state.notes.isPopupWindowActive);
+  const disapleTextFields = useAppSelector((state) => state.notes.disapleTextFields);
 
-  const { currentNote, isPopupWindowActive, disapleTextFields } = useAppSelector((state) => state.notes);
 
   const [note, setNote] = useState<NoteType>({
     id: openForEdit ? currentNote.id : "",
