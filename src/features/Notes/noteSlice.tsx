@@ -73,6 +73,7 @@ const noteSlice = createSlice({
       state.currentNote = note;
       state.PopUpWindowOpenFromMenuToEdit = true;
       state.isPopupWindowActive = true;
+      state.disapleTextFields = false;
 
     },
     preparDeletePopUpWindow: (state, action) => {
@@ -98,6 +99,7 @@ const noteSlice = createSlice({
     openPopUpWindowAsEdit(state) {
       state.PopUpWindowOpenFromMenuToEdit = true;
       state.isPopupWindowActive = true;
+      state.disapleTextFields = false;
 
     },
     closePopUpWindowAsEdit(state) {
@@ -108,7 +110,7 @@ const noteSlice = createSlice({
       state.currentNote.showFullView = !state.currentNote.showFullView;
     },
     toggleFavorite: (state, action) => {
-      const id = (action.payload as { id: string }).id;
+      const id = (action.payload as string);
       const note = state.notes.find(note => note.id === id);
       if (note) {
         note.favorite = !note.favorite;

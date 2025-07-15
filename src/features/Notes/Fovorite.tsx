@@ -16,6 +16,7 @@ export default function Favorite({ noteID, purpose = 'note', favorite }: { noteI
       event.stopPropagation();
       event.preventDefault();
       console.log(`Toggling favorite for note with ID: ${noteID}`);
+      console.log(favorite)
     } else if (purpose === 'note' && !noteID) {
       console.log("there is no NoteID and the favorite component is used as toggle favorite");
     }
@@ -30,6 +31,7 @@ export default function Favorite({ noteID, purpose = 'note', favorite }: { noteI
     <IconButton
       onMouseDown={handleMouseDown}
       onClick={handleClick}
+      sx={{ padding: 0 }}
       color={favorite ? 'error' : 'inherit'}><FavoriteOutlined />
     </IconButton>
 

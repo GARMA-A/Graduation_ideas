@@ -17,10 +17,8 @@ export default function BottomNavBar() {
 
   return (<>
     <BottomNavigation
-      sx={{ width: '100%', position: 'fixed', bottom: 0, left: 0, zIndex: 1000 }}
-      showLabels
-
-    >
+      sx={{ width: '100%', position: 'fixed', bottom: 0, left: 0, zIndex: 1000, padding: 0 }}
+      showLabels>
       <BottomNavigationAction onClick={() => dispatch(setFavoriteFilterActive(false))} label='Home' icon={<HomeIcon color={!favoriteFilterActive ? "info" : "inherit"} />} />
       <BottomNavigationAction onClick={() => dispatch(setFavoriteFilterActive(true))} label='Favorites' icon={<Favorite purpose="filter" favorite={favoriteFilterActive} />} />
     </BottomNavigation >
