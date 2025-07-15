@@ -10,7 +10,7 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import Favorite from '../Notes/Fovorite';
 import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux';
 import type { AppDispatch } from '../../store';
-import { setFavoriteFilterActive } from '../Notes/noteSlice';
+import { emptySearchQuery, setFavoriteFilterActive } from '../Notes/noteSlice';
 import type { RootState } from '../../store';
 
 
@@ -29,6 +29,12 @@ export default function NavBar() {
     } else {
       dispatch(setFavoriteFilterActive(true));
     }
+    dispatch(emptySearchQuery());
+  }
+
+  function handleEditNoteClick() {
+    dispatch(setFavoriteFilterActive(false))
+    dispatch(emptySearchQuery());
   }
 
   return (
@@ -41,7 +47,7 @@ export default function NavBar() {
             color="inherit"
             ria-label="open drawer"
             sx={{ mr: 2 }}
-            onClick={() => dispatch(setFavoriteFilterActive(false))}
+            onClick={handleEditNoteClick}
           >
             <EditNoteIcon />
 

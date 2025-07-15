@@ -45,6 +45,7 @@ export default function HomePage() {
   const currentNote = useAppSelector((state) => state.notes.currentNote);
   const isPopupWindowActive = useAppSelector((state) => state.notes.isPopupWindowActive);
   const PopUpWindowOpenFromMenuToEdit = useAppSelector((state) => state.notes.PopUpWindowOpenFromMenuToEdit)
+  const searchQuery = useAppSelector((state) => state.notes.searchQuery);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -85,6 +86,7 @@ export default function HomePage() {
               {!currentNote.showFullView && <SmallNoteContainer />}
             </Paper>
           }
+
         </Stack>
         <AddNote />
 
