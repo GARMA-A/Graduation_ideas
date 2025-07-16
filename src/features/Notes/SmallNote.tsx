@@ -78,7 +78,7 @@ export default function SmallNote({ note }: { note: NoteType }) {
                 justifyContent: 'space-between',
                 alignItems: isSm ? 'start' : 'center',
               }}>
-              <Favorite noteID={note.id} favorite={note.favorite} />
+              <Favorite noteID={note._id} favorite={note.favorite} />
             </Box>
           }
           title={

@@ -39,21 +39,21 @@ export default function SmallNoteContainer() {
       }
       {!favoriteFilterActive && searchQuery.length === 0 &&
         notes.filter(note => !note.favorite).map((note) => (
-          <SmallNote key={note.id} note={note} />
+          <SmallNote key={note._id} note={note} />
         ))}
       {!favoriteFilterActive && searchQuery.length > 0 &&
         notes.filter(note => !note.favorite).filter(note => note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           note.description.toLowerCase().includes(searchQuery.toLowerCase())
-        ).map(note => <SmallNote key={note.id} note={note} />)
+        ).map(note => <SmallNote key={note._id} note={note} />)
       }
       {favoriteFilterActive && searchQuery.length === 0 &&
-        filteredNotes.map(note => <SmallNote key={note.id} note={note} />)
+        filteredNotes.map(note => <SmallNote key={note._id} note={note} />)
       }
 
       {favoriteFilterActive && searchQuery.length > 0 &&
         filteredNotes.filter(note => note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           note.description.toLowerCase().includes(searchQuery.toLowerCase())
-        ).map(note => <SmallNote key={note.id} note={note} />)
+        ).map(note => <SmallNote key={note._id} note={note} />)
       }
 
     </Box>

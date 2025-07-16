@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { IconButton, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useDispatch } from 'react-redux';
-import { preparDeletePopUpWindow, prepareEditPopUpWindow, remove, setCurrentNote, setMenuIsActive, toggleShowFullView } from './noteSlice';
+import { preparDeletePopUpWindow, prepareEditPopUpWindow, remove, setMenuIsActive } from './noteSlice';
 import type { AppDispatch } from '../../store';
 import type { NoteType } from './NoteType';
 
@@ -41,7 +41,7 @@ export default function ThreeDots({ propNote }: { propNote: NoteType }) {
     event.stopPropagation();
     handleMenuClose(event);
     dispatch(preparDeletePopUpWindow(propNote));
-    dispatch(remove(propNote));
+    dispatch(remove(propNote._id));
   };
 
 
