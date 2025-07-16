@@ -63,6 +63,21 @@ const deleteNote = async (req: Request, res: Response) => {
 	}
 }
 
+const toggleFavorite = async (req: Request, res: Response) => {
+	try {
+		const noteId = req.params.id;
+		const note = await Notes.findById(noteId);
+		if (!note) {
+			return res.status(404).json({ message: 'Note not found' });
+		}
+		note.favorite = !note.favorite;
+		await note.save();
+		res.status(200).json(note);
+	} catch (error) {
+		res.status(500).json({ message: 'Error toggling favorite', error });
+	}
+}
 
 
-export { getAllNotes, getNoteById, createNote, updateNote, deleteNote };
+
+export { getAllNotes, getNoteById, createNote, updateNote, deleteNote, toggleFavorite };

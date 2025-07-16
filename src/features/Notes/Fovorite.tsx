@@ -2,7 +2,7 @@ import { FavoriteOutlined } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../store";
-import { toggleFavorite } from "./noteSlice";
+import { DBtoggleFavorite } from "./noteThunks";
 
 
 
@@ -12,7 +12,7 @@ export default function Favorite({ noteID, purpose = 'note', favorite }: { noteI
 
   function handleClick(event: React.MouseEvent<HTMLElement>) {
     if (purpose === 'note' && noteID) {
-      dispatch(toggleFavorite(noteID));
+      dispatch(DBtoggleFavorite(noteID));
       event.stopPropagation();
       event.preventDefault();
       console.log(`Toggling favorite for note with ID: ${noteID}`);

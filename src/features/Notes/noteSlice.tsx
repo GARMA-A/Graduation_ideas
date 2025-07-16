@@ -96,13 +96,6 @@ const noteSlice = createSlice({
     toggleShowFullView(state) {
       state.showFullView = !state.showFullView;
     },
-    toggleFavorite: (state, action) => {
-      const id = (action.payload as string);
-      const note = state.notes.find(note => note._id === id);
-      if (note) {
-        note.favorite = !note.favorite;
-      }
-    },
     setFavoriteFilterActive: (state, action) => {
       state.favoriteFilterActive = action.payload as boolean;
     },
@@ -156,6 +149,13 @@ const noteSlice = createSlice({
       state.error = null;
       state.notes.push(action.payload as { _id: string, title: string, description: string, favorite: boolean });
     },
+    toggleFavoriteNoteSuccess: (state, action) => {
+      const id = (action.payload as string);
+      const note = state.notes.find(note => note._id === id);
+      if (note) {
+        note.favorite = !note.favorite;
+      }
+    },
     fetchNotesFailure: (state, action) => {
       state.isLoading = false;
       state.error = action.payload as string;
@@ -168,7 +168,6 @@ export default noteSlice;
 
 export const {
   setCurrentNote,
-  toggleFavorite,
   toggleEditView,
   toggleCreateView,
   toggleShowFullView,
@@ -189,6 +188,7 @@ export const {
   updateNoteSuccess,
   deleteNoteSuccess,
   createNoteSuccess,
+  toggleFavoriteNoteSuccess
 } = noteSlice.actions;
 
 
