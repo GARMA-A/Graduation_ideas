@@ -14,6 +14,8 @@ interface NoteState {
   showFullView: boolean;
   showEditView: boolean;
   showCreateView: boolean;
+  isLoading: boolean;
+  error: null | string;
 }
 const initialState: NoteState = {
   notes: [],
@@ -32,6 +34,8 @@ const initialState: NoteState = {
   showFullView: false,
   showEditView: false,
   showCreateView: false,
+  isLoading: false,
+  error: null,
 };
 
 
@@ -39,27 +43,6 @@ const noteSlice = createSlice({
   name: 'notes',
   initialState,
   reducers: {
-    readAllNotes: (state, action) => {
-      const notes = action.payload as Array<NoteType>;
-      state.notes = notes;
-    },
-    create: (state, action) => {
-      const newNote = action.payload as NoteType;
-      state.notes = [...state.notes, newNote];
-    },
-    remove: (state, action) => {
-      state.notes = state.notes.filter(note => note._id !== (action.payload as string));
-    },
-    update: (state, action) => {
-      const updatedNote = action.payload as NoteType;
-      state.notes = state.notes.map(note =>
-        note._id === updatedNote._id ? { ...updatedNote } : note
-      );
-
-      if (state.currentNote._id === updatedNote._id) {
-        state.currentNote = { ...updatedNote };
-      }
-    },
     setCurrentNote: (state, action) => {
       const note = action.payload as NoteType;
       state.currentNote = note;
@@ -133,6 +116,50 @@ const noteSlice = createSlice({
     toggleCreateView: (state) => {
       state.showCreateView = !state.showCreateView;
     },
+    fetchNotesStart: (state) => {
+      state.isLoading = true;
+    },
+    fetchNotesSuccess: (state, action) => {
+      state.notes = action.payload as Array<NoteType>;
+      state.isLoading = false;
+      state.error = null;
+    },
+    updateNoteSuccess: (state, action) => {
+      state.isLoading = false;
+      state.error = null;
+      const updatedNote = action.payload as NoteType;
+      state.notes = state.notes.map(note =>
+        note._id === updatedNote._id ? { ...updatedNote } : note
+      );
+
+      if (state.currentNote._id === updatedNote._id) {
+        state.currentNote = { ...updatedNote };
+      }
+    },
+    deleteNoteSuccess: (state, action) => {
+      state.isLoading = false;
+      state.error = null;
+      const deletedNoteId = action.payload as string;
+      state.notes = state.notes.filter(note => note._id !== deletedNoteId);
+      if (state.currentNote._id === deletedNoteId) {
+        state.currentNote = {
+          _id: '',
+          title: '',
+          description: '',
+          favorite: false,
+        };
+      }
+      state.showFullView = false;
+    },
+    createNoteSuccess: (state, action) => {
+      state.isLoading = false;
+      state.error = null;
+      state.notes.push(action.payload as { _id: string, title: string, description: string, favorite: boolean });
+    },
+    fetchNotesFailure: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload as string;
+    },
   },
 
 })
@@ -140,9 +167,6 @@ const noteSlice = createSlice({
 export default noteSlice;
 
 export const {
-  create,
-  remove,
-  update,
   setCurrentNote,
   toggleFavorite,
   toggleEditView,
@@ -154,12 +178,18 @@ export const {
   openPopUpWindowAsEdit,
   closePopUpWindowAsEdit,
   prepareEditPopUpWindow,
-  readAllNotes,
   preparDeletePopUpWindow,
   closeDeletePopUpWindow,
   setFavoriteFilterActive,
   setSearchQuery,
-  emptySearchQuery
+  emptySearchQuery,
+  fetchNotesStart,
+  fetchNotesFailure,
+  fetchNotesSuccess,
+  updateNoteSuccess,
+  deleteNoteSuccess,
+  createNoteSuccess,
 } = noteSlice.actions;
+
 
 

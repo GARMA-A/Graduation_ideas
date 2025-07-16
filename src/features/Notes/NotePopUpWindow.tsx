@@ -7,8 +7,9 @@ import type { TypedUseSelectorHook } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import type { RootState, AppDispatch } from '../../store';
 import type { NoteType } from '../Notes/NoteType';
-import { closeDeletePopUpWindow, closePopUpWindow, closePopUpWindowAsEdit, create, update } from "./noteSlice";
+import { closeDeletePopUpWindow, closePopUpWindow, closePopUpWindowAsEdit } from "./noteSlice";
 import { EditOutlined, RemoveCircle } from "@mui/icons-material";
+import { DBcreate, DBupdate } from "./noteThunks";
 
 
 
@@ -48,7 +49,7 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
 
   function handleSubmitNote() {
     if (openForEdit) {
-      dispatch(update(note));
+      dispatch(DBupdate(note));
     } else if (disapleTextFields) {
       dispatch(closeDeletePopUpWindow());
     } else {
@@ -56,9 +57,8 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
         alert("Title or description cannot be empty");
         return;
       }
-      note._id = Date.now().toString();
       note.favorite = false;
-      dispatch(create(note))
+      dispatch(DBcreate(note))
     }
     handleClose();
   }
