@@ -18,7 +18,7 @@ interface NoteState {
 const initialState: NoteState = {
   notes: [],
   currentNote: {
-    id: '',
+    _id: '',
     title: '',
     description: '',
     favorite: false,
@@ -48,15 +48,15 @@ const noteSlice = createSlice({
       state.notes = [...state.notes, newNote];
     },
     remove: (state, action) => {
-      state.notes = state.notes.filter(note => note.id !== (action.payload as { id: string }).id);
+      state.notes = state.notes.filter(note => note._id !== (action.payload as string));
     },
     update: (state, action) => {
       const updatedNote = action.payload as NoteType;
       state.notes = state.notes.map(note =>
-        note.id === updatedNote.id ? { ...updatedNote } : note
+        note._id === updatedNote._id ? { ...updatedNote } : note
       );
 
-      if (state.currentNote.id === updatedNote.id) {
+      if (state.currentNote._id === updatedNote._id) {
         state.currentNote = { ...updatedNote };
       }
     },
@@ -115,7 +115,7 @@ const noteSlice = createSlice({
     },
     toggleFavorite: (state, action) => {
       const id = (action.payload as string);
-      const note = state.notes.find(note => note.id === id);
+      const note = state.notes.find(note => note._id === id);
       if (note) {
         note.favorite = !note.favorite;
       }

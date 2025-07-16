@@ -1,5 +1,5 @@
 export type NoteType = {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   favorite: boolean;

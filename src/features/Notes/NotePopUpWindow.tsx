@@ -24,7 +24,7 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
   const disapleTextFields = useAppSelector((state) => state.notes.disapleTextFields);
 
   const [note, setNote] = useState<NoteType>({
-    id: openForEdit || disapleTextFields ? currentNote.id : "",
+    _id: openForEdit || disapleTextFields ? currentNote._id : "",
     title: openForEdit || disapleTextFields ? currentNote.title : "",
     description: openForEdit || disapleTextFields ? currentNote.description : "",
     favorite: openForEdit || disapleTextFields ? currentNote.favorite : false,
@@ -56,7 +56,7 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
         alert("Title or description cannot be empty");
         return;
       }
-      note.id = Date.now().toString();
+      note._id = Date.now().toString();
       note.favorite = false;
       dispatch(create(note))
     }
