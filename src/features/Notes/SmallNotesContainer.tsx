@@ -29,12 +29,12 @@ export default function SmallNoteContainer() {
         },
       }}
     >
-      {notes.length === 0 && !favoriteFilterActive && <Typography variant="h3" color="textSecondary" align="center" >
-        There is no notes yet !
+      {notes.length === 0 || notes.filter(note => !note.favorite).length === 0 && !favoriteFilterActive && <Typography variant="h3" color="textSecondary" align="center" >
+        There is no General notes
       </Typography>
       }
       {filteredNotes.length === 0 && favoriteFilterActive && <Typography variant="h3" color="textSecondary" align="center" >
-        There is no favorite notes yet !
+        There is no favorite notes
       </Typography>
       }
       {!favoriteFilterActive && searchQuery.length === 0 &&

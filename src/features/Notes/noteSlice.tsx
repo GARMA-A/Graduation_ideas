@@ -1,25 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
+import type { NoteType } from "./NoteType";
 
-interface Note {
-  id: string;
-  title: string;
-  description: string;
-  favorite: boolean;
-  showFullView: boolean;
-  showEditView: boolean;
-  showCreateView: boolean;
-
-}
 
 interface NoteState {
-  notes: Array<Note>;
-  currentNote: Note;
+  notes: Array<NoteType>;
+  currentNote: NoteType;
   menuIsOpen: boolean;
   isPopupWindowActive: boolean;
   PopUpWindowOpenFromMenuToEdit: boolean;
   disapleTextFields: boolean;
   favoriteFilterActive: boolean;
   searchQuery: string;
+  showFullView: boolean;
+  showEditView: boolean;
+  showCreateView: boolean;
 }
 const initialState: NoteState = {
   notes: [],
@@ -28,9 +22,6 @@ const initialState: NoteState = {
     title: '',
     description: '',
     favorite: false,
-    showFullView: false,
-    showEditView: false,
-    showCreateView: false,
   },
   menuIsOpen: false,
   isPopupWindowActive: false,
@@ -38,6 +29,9 @@ const initialState: NoteState = {
   disapleTextFields: false,
   favoriteFilterActive: false,
   searchQuery: '',
+  showFullView: false,
+  showEditView: false,
+  showCreateView: false,
 };
 
 
@@ -46,18 +40,18 @@ const noteSlice = createSlice({
   initialState,
   reducers: {
     readAllNotes: (state, action) => {
-      const notes = action.payload as Array<Note>;
+      const notes = action.payload as Array<NoteType>;
       state.notes = notes;
     },
     create: (state, action) => {
-      const newNote = action.payload as Note;
+      const newNote = action.payload as NoteType;
       state.notes = [...state.notes, newNote];
     },
     remove: (state, action) => {
       state.notes = state.notes.filter(note => note.id !== (action.payload as { id: string }).id);
     },
     update: (state, action) => {
-      const updatedNote = action.payload as Note;
+      const updatedNote = action.payload as NoteType;
       state.notes = state.notes.map(note =>
         note.id === updatedNote.id ? { ...updatedNote } : note
       );
@@ -67,11 +61,11 @@ const noteSlice = createSlice({
       }
     },
     setCurrentNote: (state, action) => {
-      const note = action.payload as Note;
+      const note = action.payload as NoteType;
       state.currentNote = note;
     },
     prepareEditPopUpWindow: (state, action) => {
-      const note = action.payload as Note;
+      const note = action.payload as NoteType;
       state.currentNote = note;
       state.PopUpWindowOpenFromMenuToEdit = true;
       state.isPopupWindowActive = true;
@@ -79,9 +73,9 @@ const noteSlice = createSlice({
 
     },
     preparDeletePopUpWindow: (state, action) => {
-      const note = action.payload as Note;
+      const note = action.payload as NoteType;
       state.currentNote = note;
-      state.PopUpWindowOpenFromMenuToEdit = true;
+      state.PopUpWindowOpenFromMenuToEdit = false;
       state.isPopupWindowActive = true;
       state.disapleTextFields = true;
     },
@@ -89,6 +83,7 @@ const noteSlice = createSlice({
       state.PopUpWindowOpenFromMenuToEdit = false;
       state.isPopupWindowActive = false;
       state.disapleTextFields = false;
+      state.showFullView = false;
     },
     closePopUpWindow(state) {
       state.isPopupWindowActive = false;
@@ -116,7 +111,7 @@ const noteSlice = createSlice({
       state.isPopupWindowActive = false;
     },
     toggleShowFullView(state) {
-      state.currentNote.showFullView = !state.currentNote.showFullView;
+      state.showFullView = !state.showFullView;
     },
     toggleFavorite: (state, action) => {
       const id = (action.payload as string);
@@ -131,19 +126,12 @@ const noteSlice = createSlice({
     setMenuIsActive: (state, action) => {
       state.menuIsOpen = action.payload as boolean;
     },
-    toggleEditView: (state, action) => {
-      const id = (action.payload as { id: string }).id;
-      const note = state.notes.find(note => note.id === id);
-      if (note) {
-        note.showEditView = !note.showEditView;
-      }
+    toggleEditView: (state) => {
+      state.showEditView = !state.showEditView;
+
     },
-    toggleCreateView: (state, action) => {
-      const id = (action.payload as { id: string }).id;
-      const note = state.notes.find(note => note.id === id);
-      if (note) {
-        note.showCreateView = !note.showCreateView;
-      }
+    toggleCreateView: (state) => {
+      state.showCreateView = !state.showCreateView;
     },
   },
 

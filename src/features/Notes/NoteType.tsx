@@ -3,7 +3,4 @@ export type NoteType = {
   title: string;
   description: string;
   favorite: boolean;
-  showFullView?: boolean;
-  showEditView?: boolean;
-  showCreateView?: boolean;
 };
