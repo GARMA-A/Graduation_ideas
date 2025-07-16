@@ -155,6 +155,8 @@ const noteSlice = createSlice({
       if (note) {
         note.favorite = !note.favorite;
       }
+      state.isLoading = false;
+      state.error = null;
     },
     fetchNotesFailure: (state, action) => {
       state.isLoading = false;
