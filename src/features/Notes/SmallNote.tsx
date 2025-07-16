@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import { useDispatch } from 'react-redux';
-import { setCurrentNote } from './noteSlice';
+import { setCurrentNote, toggleShowFullView } from './noteSlice';
 import type { NoteType } from './NoteType';
 import Favorite from './Fovorite';
 
@@ -48,15 +48,9 @@ export default function SmallNote({ note }: { note: NoteType }) {
 
   function handleClick() {
     console.log("small note clicked");
-    dispatch(setCurrentNote({
-      id: note.id,
-      title: note.title,
-      description: note.description,
-      favorite: note.favorite,
-      showFullView: true,
-      showEditView: false,
-      showCreateView: false
-    }));
+    dispatch(setCurrentNote(note));
+    dispatch(toggleShowFullView());
+
   }
 
   return (

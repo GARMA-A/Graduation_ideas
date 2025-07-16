@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import type { RootState, AppDispatch } from '../../store';
 import type { NoteType } from '../Notes/NoteType';
 import { closeDeletePopUpWindow, closePopUpWindow, closePopUpWindowAsEdit, create, update } from "./noteSlice";
+import { EditOutlined, RemoveCircle } from "@mui/icons-material";
 
 
 
@@ -22,12 +23,11 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
   const isPopupWindowActive = useAppSelector((state) => state.notes.isPopupWindowActive);
   const disapleTextFields = useAppSelector((state) => state.notes.disapleTextFields);
 
-
   const [note, setNote] = useState<NoteType>({
-    id: openForEdit ? currentNote.id : "",
-    title: openForEdit ? currentNote.title : "",
-    description: openForEdit ? currentNote.description : "",
-    favorite: openForEdit ? currentNote.favorite : false,
+    id: openForEdit || disapleTextFields ? currentNote.id : "",
+    title: openForEdit || disapleTextFields ? currentNote.title : "",
+    description: openForEdit || disapleTextFields ? currentNote.description : "",
+    favorite: openForEdit || disapleTextFields ? currentNote.favorite : false,
   });
 
   // useEffect(() => {
@@ -47,13 +47,15 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
 
 
   function handleSubmitNote() {
-    if (note.title.trim() === "" || note.description.trim() === "") {
-      alert("Title or description cannot be empty");
-      return;
-    }
     if (openForEdit) {
       dispatch(update(note));
+    } else if (disapleTextFields) {
+      dispatch(closeDeletePopUpWindow());
     } else {
+      if (note.title.trim() === "" || note.description.trim() === "") {
+        alert("Title or description cannot be empty");
+        return;
+      }
       note.id = Date.now().toString();
       note.favorite = false;
       dispatch(create(note))
@@ -142,7 +144,7 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
             <Button
               variant="contained"
               size="large"
-              endIcon={<AddIcon />}
+              endIcon={disapleTextFields ? <RemoveCircle /> : openForEdit ? <EditOutlined /> : <AddIcon />}
               sx={{
                 textTransform: 'none',
                 width: { xs: '90%', sm: 'auto' },
@@ -153,6 +155,7 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
             >
               {openForEdit && "Confirm"}
               {!openForEdit && !disapleTextFields && "Create"}
+              {disapleTextFields && "Delete"}
             </Button>
 
             <Button
@@ -171,7 +174,7 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
             </Button>
           </Box>
         </DialogContent>
-      </Dialog>
+      </Dialog >
     </>
   );
 }

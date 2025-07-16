@@ -42,10 +42,9 @@ export default function HomePage() {
 
 
   const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-  const currentNote = useAppSelector((state) => state.notes.currentNote);
+  const showFullView = useAppSelector((state) => state.notes.showFullView);
   const isPopupWindowActive = useAppSelector((state) => state.notes.isPopupWindowActive);
   const PopUpWindowOpenFromMenuToEdit = useAppSelector((state) => state.notes.PopUpWindowOpenFromMenuToEdit)
-  const searchQuery = useAppSelector((state) => state.notes.searchQuery);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -82,8 +81,8 @@ export default function HomePage() {
               width: { xs: '100vw', sm: '80vw', md: '70vw', lg: '65vw' },
             }}
             >
-              {currentNote.showFullView && <FullNoteView />}
-              {!currentNote.showFullView && <SmallNoteContainer />}
+              {showFullView && <FullNoteView />}
+              {!showFullView && <SmallNoteContainer />}
             </Paper>
           }
 
