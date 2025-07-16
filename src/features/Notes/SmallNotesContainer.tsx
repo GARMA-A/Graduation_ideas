@@ -29,7 +29,7 @@ export default function SmallNoteContainer() {
         },
       }}
     >
-      {notes.length === 0 && <Typography variant="h3" color="textSecondary" align="center" >
+      {notes.length === 0 && !favoriteFilterActive && <Typography variant="h3" color="textSecondary" align="center" >
         There is no notes yet !
       </Typography>
       }
@@ -38,11 +38,11 @@ export default function SmallNoteContainer() {
       </Typography>
       }
       {!favoriteFilterActive && searchQuery.length === 0 &&
-        notes.map((note) => (
+        notes.filter(note => !note.favorite).map((note) => (
           <SmallNote key={note.id} note={note} />
         ))}
       {!favoriteFilterActive && searchQuery.length > 0 &&
-        notes.filter(note => note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        notes.filter(note => !note.favorite).filter(note => note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           note.description.toLowerCase().includes(searchQuery.toLowerCase())
         ).map(note => <SmallNote key={note.id} note={note} />)
       }
