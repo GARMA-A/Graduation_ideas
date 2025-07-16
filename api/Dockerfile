@@ -1,8 +1,20 @@
 FROM node:20-alpine
+
 WORKDIR /app
-COPY package*.json tsconfig.json ./
+
+# Copy package files and configs
+COPY package*.json ./
+COPY tsconfig.json ./
+COPY .env .   
+
+# Copy source code
 COPY src ./src
+
+# Install dependencies
 RUN npm install
+
+# Build project
 RUN npm run build
-ENV NODE_ENV development
-CMD ["node","dist/index.js"]
+
+# Start the application
+CMD ["node", "dist/index.js"]

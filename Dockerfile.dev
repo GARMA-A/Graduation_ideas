@@ -1,13 +1,18 @@
-# Dockerfile.dev
 FROM node:20-alpine
+
 WORKDIR /app
 
-# Copy only package files, install deps
-COPY package*.json tsconfig*.json ./
+# Copy package files first for better caching
+COPY package*.json ./
+
+# Install dependencies
 RUN npm install
 
-# Copy everything else
+# Copy all files
 COPY . .
 
+# Expose development port
 EXPOSE 5173
+
+# Start development server
 CMD ["npm", "run", "dev"]
