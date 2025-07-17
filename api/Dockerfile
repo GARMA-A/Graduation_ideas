@@ -8,9 +8,6 @@ WORKDIR /app
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# Copy .env file (optional for local dev; Railway injects env vars at runtime)
-COPY .env . 
-
 # Copy the rest of the app
 COPY src ./src
 
