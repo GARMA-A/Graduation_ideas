@@ -1,4 +1,4 @@
-import { Box, Paper, Stack, useMediaQuery, useTheme } from "@mui/material";
+import { Box, CircularProgress, Paper, Stack, Typography, useMediaQuery, useTheme } from "@mui/material";
 import NavBar from "../features/Layout/NavBar";
 import { ColorModeProvider } from "../contexts/ThemeContext";
 import BottomNavBar from "../features/Layout/BottomNavBar";
@@ -6,12 +6,11 @@ import AddNote from "../features/Notes/AddNote";
 import { NotePopUpWindow } from "../features/Notes/NotePopUpWindow";
 import SearchBar from "../features/Notes/SearchBar";
 import FullNoteView from "../features/Notes/FullNoteView";
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import type { TypedUseSelectorHook } from 'react-redux';
-import type { AppDispatch, RootState } from '../store';
+import type { RootState } from '../store';
 import SmallNoteContainer from "../features/Notes/SmallNotesContainer";
-import { useEffect } from "react";
-import { DBreadAllNotes } from "../features/Notes/noteThunks";
+import { useNotes } from "../features/Notes/query_fetch";
 
 
 
@@ -20,19 +19,15 @@ export default function HomePage() {
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const { isLoading, isError, error } = useNotes();
+
 
   const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
   const showFullView = useAppSelector((state) => state.notes.showFullView);
   const isPopupWindowActive = useAppSelector((state) => state.notes.isPopupWindowActive);
-  const isLoading = useAppSelector(state => state.notes.isLoading);
-  const error = useAppSelector(state => state.notes.error);
   const PopUpWindowOpenFromMenuToEdit = useAppSelector((state) => state.notes.PopUpWindowOpenFromMenuToEdit)
 
-  const dispatch = useDispatch<AppDispatch>();
 
-  useEffect(() => {
-    dispatch(DBreadAllNotes());
-  }, [dispatch]);
 
 
 
@@ -63,11 +58,11 @@ export default function HomePage() {
               width: { xs: '100vw', sm: '80vw', md: '70vw', lg: '65vw' },
             }}
             >
-              {showFullView && <FullNoteView />}
-              {!showFullView && <SmallNoteContainer />}
+              {!isLoading && !isError && showFullView && <FullNoteView />}
+              {!isLoading && !isError && !showFullView && <SmallNoteContainer />}
               <Box width="100%" display="flex" justifyContent="center">
-                {error ? error : ""}
-                {!error && isLoading ? "loading" : ""}
+                {isError && <Typography color="error">{error instanceof Error ? error.message : 'An error occurred'}</Typography>}
+                {!isError && isLoading ? <CircularProgress color="info" /> : null}
               </Box>
             </Paper>
           }
