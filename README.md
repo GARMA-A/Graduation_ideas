@@ -1,8 +1,6 @@
 # Graduation Projects Notebook App 
 
 
-
-
 #### I'm on vacation now, before final year, and we're supposed to think of an idea <br/> for a graduation project, so I thought of creating a notebook app,<br/> where you can write your notes and save them in a database, and you can also
 
 ### It is simple idea build using this tech stack:
@@ -30,7 +28,7 @@ docker-compose down
 
 ### The app will be deployed on:
 - **Frontend**: Vercel
-- **Backend**: Render
+- **Backend**: Railway
 
 
 
