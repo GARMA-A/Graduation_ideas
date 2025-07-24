@@ -6,10 +6,11 @@ import { useSelector } from 'react-redux';
 import type { TypedUseSelectorHook } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import type { RootState, AppDispatch } from '../../store';
-import type { NoteType } from '../Notes/NoteType';
 import { closeDeletePopUpWindow, closePopUpWindow, closePopUpWindowAsEdit } from "./noteSlice";
 import { EditOutlined, RemoveCircle } from "@mui/icons-material";
-import { DBcreate, DBupdate } from "./noteThunks";
+import { DBcreate, DBdelete, DBupdate } from "./noteThunks";
+import type { NoteType } from "./NoteType";
+
 
 
 
@@ -51,6 +52,7 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
     if (openForEdit) {
       dispatch(DBupdate(note));
     } else if (disapleTextFields) {
+      dispatch(DBdelete(currentNote._id));
       dispatch(closeDeletePopUpWindow());
     } else {
       if (note.title.trim() === "" || note.description.trim() === "") {

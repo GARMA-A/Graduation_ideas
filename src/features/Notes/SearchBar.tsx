@@ -10,6 +10,7 @@ export default function SearchBar() {
   const dispatch = useDispatch<AppDispatch>();
   const [internalQuery, setInternalQuery] = useState("");
 
+
   useEffect(() => {
     const handler = setTimeout(() => {
       dispatch(setSearchQuery(internalQuery));

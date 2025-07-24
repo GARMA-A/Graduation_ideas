@@ -5,7 +5,6 @@ import { useDispatch } from 'react-redux';
 import { preparDeletePopUpWindow, prepareEditPopUpWindow, setMenuIsActive } from './noteSlice';
 import type { AppDispatch } from '../../store';
 import type { NoteType } from './NoteType';
-import { DBdelete } from './noteThunks';
 
 
 
@@ -41,7 +40,6 @@ export default function ThreeDots({ propNote }: { propNote: NoteType }) {
     event.stopPropagation();
     handleMenuClose(event);
     dispatch(preparDeletePopUpWindow(propNote));
-    dispatch(DBdelete(propNote._id));
   };
 
 
