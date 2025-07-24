@@ -1,7 +1,6 @@
 import { Box, Button, Dialog, DialogContent, TextField, useMediaQuery, useTheme } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { useState } from "react";
 import { useSelector } from 'react-redux';
 import type { TypedUseSelectorHook } from 'react-redux';
 import { useDispatch } from 'react-redux';
@@ -9,8 +8,8 @@ import type { RootState, AppDispatch } from '../../store';
 import { closeDeletePopUpWindow, closePopUpWindow, closePopUpWindowAsEdit } from "./noteSlice";
 import { EditOutlined, RemoveCircle } from "@mui/icons-material";
 import { DBcreate, DBdelete, DBupdate } from "./noteThunks";
+import { useForm } from "react-hook-form";
 import type { NoteType } from "./NoteType";
-
 
 
 
@@ -24,43 +23,34 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
   const currentNote = useAppSelector((state) => state.notes.currentNote);
   const isPopupWindowActive = useAppSelector((state) => state.notes.isPopupWindowActive);
   const disapleTextFields = useAppSelector((state) => state.notes.disapleTextFields);
-
-  const [note, setNote] = useState<NoteType>({
-    _id: openForEdit || disapleTextFields ? currentNote._id : "",
-    title: openForEdit || disapleTextFields ? currentNote.title : "",
-    description: openForEdit || disapleTextFields ? currentNote.description : "",
-    favorite: openForEdit || disapleTextFields ? currentNote.favorite : false,
+  const { register, handleSubmit, formState: { errors } } = useForm<NoteType>({
+    defaultValues: {
+      _id: openForEdit || disapleTextFields ? currentNote._id : "",
+      title: openForEdit || disapleTextFields ? currentNote.title : "",
+      description: openForEdit || disapleTextFields ? currentNote.description : "",
+      favorite: openForEdit || disapleTextFields ? currentNote.favorite : false,
+    }
   });
-
-  // useEffect(() => {
-  //   if (openForEdit && currentNote) {
-  //     setNote({
-  //       id: currentNote.id,
-  //       title: currentNote.title,
-  //       description: currentNote.description,
-  //       favorite: currentNote.favorite,
-  //     });
-  //   }
-  // }, [openForEdit, currentNote]);
-
+  const isMessageBig = (input: string) =>
+    input.length < 200 || "Message is very Big";
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
 
-  function handleSubmitNote() {
+  function handleSubmitNote(data: NoteType) {
     if (openForEdit) {
-      dispatch(DBupdate(note));
+      dispatch(DBupdate(data));
     } else if (disapleTextFields) {
       dispatch(DBdelete(currentNote._id));
       dispatch(closeDeletePopUpWindow());
     } else {
-      if (note.title.trim() === "" || note.description.trim() === "") {
+      if (data.title.trim() === "" || data.description.trim() === "") {
         alert("Title or description cannot be empty");
         return;
       }
-      note.favorite = false;
-      dispatch(DBcreate(note))
+      data.favorite = false;
+      dispatch(DBcreate(data))
     }
     handleClose();
   }
@@ -89,6 +79,8 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
             paddingTop: isMobile ? 0 : '10%',
           }
         }}
+        component="form"
+        onSubmit={handleSubmit(handleSubmitNote)}
       >
         <DialogContent
           sx={{
@@ -102,35 +94,75 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
             padding: 3,
             backgroundColor: theme.palette.background.paper,
           }}
+
+
         >
           <TextField
             placeholder="Enter the title"
-            fullWidth
             variant="outlined"
+            error={errors.title ? !errors.title : false}
             sx={{
               width: { xs: '90%', sm: '500px' },
-              backgroundColor: theme.palette.background.default,
+              '& .MuiFormHelperText-root': {
+                backgroundColor: 'transparent',
+                marginLeft: 0,
+                paddingLeft: 0,
+                color: 'red',
+              },
+              '& .MuiOutlinedInput-root': {
+                backgroundColor: theme.palette.background.default,
+              }
+
             }}
-            value={note.title}
-            onChange={(e) => setNote({ ...note, title: e.target.value })}
             disabled={disapleTextFields ? true : false}
+            helperText={errors.title?.message ? errors.title?.message : ""}
+            slotProps={{
+              formHelperText: {
+                sx: {
+                  fontSize: '1rem',
+                  color: 'error.main',
+                  fontWeight: 500,
+                }
+              }
+            }}
+            {...register("title", {
+              required: "title is Required",
+              validate: {
+                NoBigMsg: isMessageBig,
+              },
+            })}
           />
 
           <TextField
             placeholder="Enter the description"
-            fullWidth
             multiline
             minRows={8}
+            error={errors.description ? !errors.description : false}
             variant="outlined"
             disabled={disapleTextFields ? true : false}
             sx={{
               width: { xs: '90%', sm: '500px' },
-
-              backgroundColor: theme.palette.background.default,
+              '& .MuiFormHelperText-root': {
+                backgroundColor: 'transparent',
+                marginLeft: 0,
+                paddingLeft: 0,
+                color: 'red',
+              },
+              '& .MuiOutlinedInput-root': {
+                backgroundColor: theme.palette.background.default,
+              }
             }}
-
-            value={note.description}
-            onChange={(e) => setNote({ ...note, description: e.target.value })}
+            helperText={errors.description?.message ? errors.description?.message : ""}
+            slotProps={{
+              formHelperText: {
+                sx: {
+                  fontSize: '1rem',
+                  color: 'error.main',
+                  fontWeight: 500,
+                }
+              }
+            }}
+            {...register("description")}
           />
 
 
@@ -153,7 +185,7 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
                 backgroundColor: theme.palette.background.default,
                 color: theme.palette.text.primary,
               }}
-              onClick={handleSubmitNote}
+              type="submit"
             >
               {openForEdit && "Confirm"}
               {!openForEdit && !disapleTextFields && "Create"}
