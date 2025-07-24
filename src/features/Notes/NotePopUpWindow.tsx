@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogContent, TextField, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Button, CircularProgress, Dialog, DialogContent, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useSelector } from 'react-redux';
@@ -7,9 +7,10 @@ import { useDispatch } from 'react-redux';
 import type { RootState, AppDispatch } from '../../store';
 import { closeDeletePopUpWindow, closePopUpWindow, closePopUpWindowAsEdit } from "./noteSlice";
 import { EditOutlined, RemoveCircle } from "@mui/icons-material";
-import { DBcreate, DBdelete, DBupdate } from "./noteThunks";
 import { useForm } from "react-hook-form";
 import type { NoteType } from "./NoteType";
+import { useCreateNote, useDeleteNote, useUpdateNote } from "./query_fetch";
+import { useCallback, useEffect } from "react";
 
 
 
@@ -31,8 +32,17 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
       favorite: openForEdit || disapleTextFields ? currentNote.favorite : false,
     }
   });
+  const { mutate: createNote, isPending: isCreating, isError: isCreateError, error: createError, isSuccess: isCreateSuccess } = useCreateNote();
+  const { mutate: updateNote, isPending: isUpdating, isError: isUpdateError, error: updateError, isSuccess: isUpdateSuccess } = useUpdateNote();
+  const { mutate: deleteNote, isPending: isDeleting, isError: isDeleteError, error: deleteError, isSuccess: isDeleteSuccess } = useDeleteNote();
+
+
   const isMessageBig = (input: string) =>
     input.length < 200 || "Message is very Big";
+
+  const thereIsError = isCreateError || isUpdateError || isDeleteError;
+  const thereIsLoading = isCreating || isUpdating || isDeleting;
+  const thereIsSuccess = isCreateSuccess || isUpdateSuccess || isDeleteSuccess;
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -40,22 +50,15 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
 
   function handleSubmitNote(data: NoteType) {
     if (openForEdit) {
-      dispatch(DBupdate(data));
+      updateNote(data)
     } else if (disapleTextFields) {
-      dispatch(DBdelete(currentNote._id));
-      dispatch(closeDeletePopUpWindow());
+      deleteNote(currentNote._id);
     } else {
-      if (data.title.trim() === "" || data.description.trim() === "") {
-        alert("Title or description cannot be empty");
-        return;
-      }
       data.favorite = false;
-      dispatch(DBcreate(data))
+      createNote(data);
     }
-    handleClose();
   }
-
-  function handleClose() {
+  const handleClose = useCallback(function() {
     if (openForEdit) {
       dispatch(closePopUpWindowAsEdit());
     } else if (disapleTextFields) {
@@ -63,7 +66,14 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
     } else {
       dispatch(closePopUpWindow());
     }
-  }
+  }, [dispatch, openForEdit, disapleTextFields]);
+
+  useEffect(() => {
+    if (thereIsSuccess) {
+      handleClose();
+    }
+  }, [thereIsSuccess, handleClose]);
+
 
   return (
     <>
@@ -97,73 +107,86 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
 
 
         >
-          <TextField
-            placeholder="Enter the title"
-            variant="outlined"
-            error={errors.title ? !errors.title : false}
-            sx={{
-              width: { xs: '90%', sm: '500px' },
-              '& .MuiFormHelperText-root': {
-                backgroundColor: 'transparent',
-                marginLeft: 0,
-                paddingLeft: 0,
-                color: 'red',
-              },
-              '& .MuiOutlinedInput-root': {
-                backgroundColor: theme.palette.background.default,
-              }
 
-            }}
-            disabled={disapleTextFields ? true : false}
-            helperText={errors.title?.message ? errors.title?.message : ""}
-            slotProps={{
-              formHelperText: {
-                sx: {
-                  fontSize: '1rem',
-                  color: 'error.main',
-                  fontWeight: 500,
+          {thereIsLoading && (
+            <Box display="flex" justifyContent="center" sx={{ my: 2 }}>
+              <CircularProgress color="info" />
+            </Box>
+          )}
+          {thereIsError && (
+            <Typography color="error" variant="body2" align="center" sx={{ mb: 1 }}>
+              {createError?.message || updateError?.message || deleteError?.message}
+            </Typography>
+          )}
+          {!thereIsError && !thereIsLoading && <>
+            <TextField
+              placeholder="Enter the title"
+              variant="outlined"
+              error={errors.title ? !errors.title : false}
+              sx={{
+                width: { xs: '90%', sm: '500px' },
+                '& .MuiFormHelperText-root': {
+                  backgroundColor: 'transparent',
+                  marginLeft: 0,
+                  paddingLeft: 0,
+                  color: 'red',
+                },
+                '& .MuiOutlinedInput-root': {
+                  backgroundColor: theme.palette.background.default,
                 }
-              }
-            }}
-            {...register("title", {
-              required: "title is Required",
-              validate: {
-                NoBigMsg: isMessageBig,
-              },
-            })}
-          />
 
-          <TextField
-            placeholder="Enter the description"
-            multiline
-            minRows={8}
-            error={errors.description ? !errors.description : false}
-            variant="outlined"
-            disabled={disapleTextFields ? true : false}
-            sx={{
-              width: { xs: '90%', sm: '500px' },
-              '& .MuiFormHelperText-root': {
-                backgroundColor: 'transparent',
-                marginLeft: 0,
-                paddingLeft: 0,
-                color: 'red',
-              },
-              '& .MuiOutlinedInput-root': {
-                backgroundColor: theme.palette.background.default,
-              }
-            }}
-            helperText={errors.description?.message ? errors.description?.message : ""}
-            slotProps={{
-              formHelperText: {
-                sx: {
-                  fontSize: '1rem',
-                  color: 'error.main',
-                  fontWeight: 500,
+              }}
+              disabled={disapleTextFields ? true : false}
+              helperText={errors.title?.message ? errors.title?.message : ""}
+              slotProps={{
+                formHelperText: {
+                  sx: {
+                    fontSize: '1rem',
+                    color: 'error.main',
+                    fontWeight: 500,
+                  }
                 }
-              }
-            }}
-            {...register("description")}
-          />
+              }}
+              {...register("title", {
+                required: "Title is Required",
+                validate: {
+                  NoBigMsg: isMessageBig,
+                },
+              })}
+            />
+
+            <TextField
+              placeholder="Enter the description"
+              multiline
+              minRows={8}
+              error={errors.description ? !errors.description : false}
+              variant="outlined"
+              disabled={disapleTextFields ? true : false}
+              sx={{
+                width: { xs: '90%', sm: '500px' },
+                '& .MuiFormHelperText-root': {
+                  backgroundColor: 'transparent',
+                  marginLeft: 0,
+                  paddingLeft: 0,
+                  color: 'red',
+                },
+                '& .MuiOutlinedInput-root': {
+                  backgroundColor: theme.palette.background.default,
+                }
+              }}
+              helperText={errors.description?.message ? errors.description?.message : ""}
+              slotProps={{
+                formHelperText: {
+                  sx: {
+                    fontSize: '1rem',
+                    color: 'error.main',
+                    fontWeight: 500,
+                  }
+                }
+              }}
+              {...register("description")}
+            />
+          </>}
 
 
           <Box
