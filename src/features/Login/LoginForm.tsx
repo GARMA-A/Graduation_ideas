@@ -17,7 +17,7 @@ import { type FormType } from './formType';
 
 export default function LoginForm({ type = "signin" }: { type?: "signin" | "signup" }) {
 
-	const { register, formState, handleSubmit } = useForm<FormType>(
+	const { register, formState, handleSubmit, getValues } = useForm<FormType>(
 		{
 			mode: "onChange"
 		}
@@ -118,7 +118,6 @@ export default function LoginForm({ type = "signin" }: { type?: "signin" | "sign
 				label="User Name"
 				name="username"
 				autoComplete="username"
-				autoFocus
 				slotProps={{
 					input: {
 						startAdornment: (
@@ -173,13 +172,18 @@ export default function LoginForm({ type = "signin" }: { type?: "signin" | "sign
 			/>
 
 			{type === 'signup' && < TextField
-				{...register("confirmPassword", { required: true })}
+				{...register("confirmPassword", {
+					required: true,
+					validate: value => value === getValues("password") || "Passwords do not match"
+				})}
+				error={!!errors.confirmPassword}
+				helperText={errors.confirmPassword ? 'Confirm Password is required' : ''}
 				required
 				fullWidth
 				name="confirmPassword"
 				label="Confirm Password"
 				type="password"
-				id="password"
+				id="confirmPassword"
 				autoComplete="current-password"
 				slotProps={{
 					input: {

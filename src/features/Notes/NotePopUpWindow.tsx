@@ -124,7 +124,7 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
             <TextField
               placeholder="Enter the title"
               variant="outlined"
-              error={errors.title ? !errors.title : false}
+              error={!!errors.title}
               sx={{
                 width: { xs: '90%', sm: '500px' },
                 '& .MuiFormHelperText-root': {
@@ -161,7 +161,6 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
               placeholder="Enter the description"
               multiline
               minRows={8}
-              error={errors.description ? !errors.description : false}
               variant="outlined"
               disabled={disapleTextFields ? true : false}
               sx={{
@@ -187,6 +186,7 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
                 }
               }}
               {...register("description")}
+              error={!!errors.description}
             />
           </>}
 
