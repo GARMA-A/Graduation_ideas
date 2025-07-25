@@ -15,7 +15,7 @@ import { useForm } from 'react-hook-form';
 import { type FormType } from './formType';
 
 
-export default function LoginForm({ type = "signin" }: { type: "signin" | "signup" }) {
+export default function LoginForm({ type = "signin" }: { type?: "signin" | "signup" }) {
 
 	const { register, formState, handleSubmit } = useForm<FormType>(
 		{
