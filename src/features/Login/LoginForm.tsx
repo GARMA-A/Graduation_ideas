@@ -6,30 +6,48 @@ import {
 	Link,
 	Checkbox,
 	FormControlLabel,
-	Paper,
 	Divider,
 	InputAdornment
 } from '@mui/material';
 
 import { LockOutlined, Email, Password, Google, Person } from '@mui/icons-material';
+import { useForm } from 'react-hook-form';
+import { type FormType } from './formType';
 
 
 export default function LoginForm({ type = "signin" }: { type: "signin" | "signup" }) {
+
+	const { register, formState, handleSubmit } = useForm<FormType>(
+		{
+			mode: "onChange"
+		}
+	);
+	const { errors } = formState;
+
+	function onSubmit(data: FormType) {
+		// Handle form submission logic here
+		console.log(data);
+		if (type === "signup") {
+			// Handle signup logic
+			console.log("Signing up:", data);
+		} else {
+			// Handle signin logic
+			console.log("Signing in:", data);
+		}
+	}
+
+
+
+
+
 	return (
-		<Paper
-			component="form"
-			sx={{
-				p: 4,
-				display: 'flex',
-				flexDirection: 'column',
-				gap: 2,
-				width: '100%',
-				maxWidth: 400,
-				borderRadius: 2,
-				boxShadow: 3,
-				height: 'auto',
-			}}
+		<form onSubmit={handleSubmit(onSubmit)}
+			className='p-4 flex flex-col gap-4 bg-black
+			sm:w-96 sm:mx-auto sm:rounded-lg 
+			'
+
 		>
+
 			{/* Header */}
 			<Box sx={{ textAlign: 'center', mb: 2 }}>
 				<Box
@@ -53,6 +71,18 @@ export default function LoginForm({ type = "signin" }: { type: "signin" | "signu
 
 			{/* Email Field */}
 			<TextField
+				{...register('email', {
+					required: 'Email is required',
+					validate: {
+						unValidEmail: (value) => {
+							if (!value) return 'Email is required';
+							const emailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+							return emailPattern.test(value) || 'Invalid email address';
+						}
+					}
+				})}
+				error={!!errors.email}
+				helperText={errors.email ? errors.email.message : ''}
 				required
 				fullWidth
 				id="email"
@@ -112,6 +142,7 @@ export default function LoginForm({ type = "signin" }: { type: "signin" | "signu
 
 			{/* Password Field */}
 			<TextField
+				{...register("password", { required: true })}
 				required
 				fullWidth
 				name="password"
@@ -142,6 +173,7 @@ export default function LoginForm({ type = "signin" }: { type: "signin" | "signu
 			/>
 
 			{type === 'signup' && < TextField
+				{...register("confirmPassword", { required: true })}
 				required
 				fullWidth
 				name="confirmPassword"
@@ -174,6 +206,7 @@ export default function LoginForm({ type = "signin" }: { type: "signin" | "signu
 			{/* Remember Me & Forgot Password */}
 			{type === 'signin' && <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 				<FormControlLabel
+					{...register("rememberMe")}
 					control={
 						<Checkbox
 							name="remember"
@@ -229,7 +262,7 @@ export default function LoginForm({ type = "signin" }: { type: "signin" | "signu
 					</Link>
 				</Typography>
 			</Box>
-		</Paper >
+		</form>
 	);
 };
 
