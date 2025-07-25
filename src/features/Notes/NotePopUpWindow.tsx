@@ -33,7 +33,9 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
     }
   });
   const { mutate: createNote, isPending: isCreating, isError: isCreateError, error: createError, isSuccess: isCreateSuccess } = useCreateNote();
+
   const { mutate: updateNote, isPending: isUpdating, isError: isUpdateError, error: updateError, isSuccess: isUpdateSuccess } = useUpdateNote();
+
   const { mutate: deleteNote, isPending: isDeleting, isError: isDeleteError, error: deleteError, isSuccess: isDeleteSuccess } = useDeleteNote();
 
 
