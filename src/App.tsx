@@ -1,8 +1,10 @@
 import { Provider } from "react-redux";
 import { ColorModeProvider } from "./contexts/ThemeContext";
-import HomePage from "./pages/HomePage";
+// import HomePage from "./pages/HomePage";
 import store from "./store.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import LoginPage from "./pages/LoginPage.tsx";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 // import HomePage from "./pages/HomePage";
 //
 const query_client = new QueryClient({
@@ -17,8 +19,10 @@ function App() {
   return (
     <Provider store={store}>
       <QueryClientProvider client={query_client}>
+        <ReactQueryDevtools initialIsOpen={false} />
         <ColorModeProvider>
-          <HomePage />
+          {/* <HomePage /> */}
+          <LoginPage />
         </ColorModeProvider>
       </QueryClientProvider>
     </Provider>

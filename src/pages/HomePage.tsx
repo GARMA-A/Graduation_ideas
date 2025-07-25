@@ -28,9 +28,6 @@ export default function HomePage() {
   const PopUpWindowOpenFromMenuToEdit = useAppSelector((state) => state.notes.PopUpWindowOpenFromMenuToEdit)
 
 
-
-
-
   return (
     <ColorModeProvider>
       <NavBar />
