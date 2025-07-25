@@ -7,6 +7,7 @@ import { corsOptions } from './config/corsOptions';
 import connectDB from './config/dbconnect'
 import rootRoute from "./routes/root"
 import notesRoute from './routes/notesRoutes';
+import usersRoute from './routes/userRoutes';
 dotenv.config();
 
 const app = express();
@@ -22,6 +23,8 @@ app.use(cookieParser());
 app.use("/", rootRoute)
 
 app.use('/api/notes', notesRoute);
+
+app.use('/api/users', usersRoute);
 
 
 
