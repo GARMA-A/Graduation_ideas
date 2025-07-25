@@ -1,4 +1,5 @@
 export type FormType = {
+	_id: string; // Unique identifier for the form
 	email: string;
 	password: string;
 	confirmPassword?: string; // Optional for login, required for signup
