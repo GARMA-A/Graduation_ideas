@@ -28,9 +28,17 @@ export const getUserById = async (req: Request, res: Response) => {
 
 
 export const createUser = async (req: Request, res: Response) => {
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	if (!req.body.email || !emailRegex.test(req.body.email)) {
+		return res.status(400).json({ message: 'Invalid email format' });
+	}
+	const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+	if (!req.body.password || !passwordRegex.test(req.body.password)) {
+		return res.status(400).json({ message: 'Password must be at least 8 characters long and contain at least one letter and one number' });
+	}
 	try {
-		const existingUser = await User.find({ email: req.body.email });
-		if (existingUser.length > 0) {
+		const existingUser = await User.findOne({ email: req.body.email });
+		if (!existingUser) {
 			return res.status(400).json({ message: 'User with this email already exists' });
 		}
 		const newUser = new User(req.body);
@@ -65,7 +73,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 		if (!deletedUser) {
 			return res.status(404).json({ message: 'User not found' });
 		}
-		res.status(204).json({ message: 'User deleted successfully' });
+		res.status(200).json({ message: 'User deleted successfully' });
 
 	} catch (error) {
 		res.status(500).json({ message: 'Error deleting user', error });
