@@ -32,7 +32,6 @@ export function useUpdateNote() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['notes'] });
 
-      // Or even better - update specific note in cache
       // queryClient.setQueryData(['notes'], (oldData: NoteType[] | undefined) => {
       //   return oldData?.map(note => note._id === variables._id ? data : note);
       // });

@@ -32,6 +32,7 @@ export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
       favorite: openForEdit || disapleTextFields ? currentNote.favorite : false,
     }
   });
+
   const { mutate: createNote, isPending: isCreating, isError: isCreateError, error: createError, isSuccess: isCreateSuccess } = useCreateNote();
 
   const { mutate: updateNote, isPending: isUpdating, isError: isUpdateError, error: updateError, isSuccess: isUpdateSuccess } = useUpdateNote();
