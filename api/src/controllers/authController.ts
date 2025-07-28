@@ -1,22 +1,91 @@
 import { Response, Request } from 'express';
+import { User } from '../models/User';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
-const signup = async (req: Request, res: Response) => {
+const register = async (req: Request, res: Response) => {
 	try {
-		const { username, password } = req.body;
-
+		const { username, password, email, rememberMe } = req.body;
 		// Validate input
-		if (!username || !password) {
-			return res.status(400).json({ message: 'Username and password are required' });
+		if (!username || !password || !email || !email.includes('@') || !email.includes('.') || password.length < 6) {
+			return res.status(400).json({ message: 'Username and password are required password must be more than 6 chars also valid email require' });
 		}
+		const user = await User.findOne({ email }).exec();
+		if (user) {
+			return res.status(400).json({ message: 'User with this email already exists' });
+		}
+		const hashedPassword = await bcrypt.hash(password, 10);
+		const newUser = new User({
+			username,
+			email,
+			password: hashedPassword,
+			rememberMe: rememberMe || false,
+		});
+		const accessToken = jwt.sign({
+			userInfo: {
+				id: newUser._id,
+			}
 
-		// Here you would typically hash the password and save the user to the database
-		// For demonstration, we'll just return a success message
-		res.status(201).json({ message: 'User created successfully', user: { username } });
+		}, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: '30m' });
+
+		const refreshToken = jwt.sign({
+			userInfo: {
+				id: newUser._id,
+			}
+		}, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: `7d` });
+
+		res.cookie('jwt', refreshToken, {
+			httpOnly: true,
+			maxAge: 7 * 24 * 60 * 60 * 1000,
+			sameSite: false,
+		});
+		await newUser.save();
+		res.status(201).json({ accessToken, message: 'User created successfully', user: newUser.email });
 	} catch (error) {
 		console.error('Error during signup:', error);
 		res.status(500).json({ message: 'Internal server error' });
 	}
 }
 
+const login = async (req: Request, res: Response) => {
+	try {
+		const { email, password } = req.body;
+		if (!email || !password) {
+			return res.status(400).json({ message: 'Email and password are required' });
+		}
+		const user = await User.findOne({ email }).exec();
+		if (!user) {
+			return res.status(401).json({ message: 'Invalid email or password' });
+		}
+		const isPasswordValid = await bcrypt.compare(password, user.password);
+		if (!isPasswordValid) {
+			return res.status(401).json({ message: 'Invalid email or password' });
+		}
+		const accessToken = jwt.sign({
+			userInfo: {
+				id: user._id,
+			}
+		}, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: '30m' });
 
-export { signup };
+		const refreshToken = jwt.sign({
+			userInfo: {
+				id: user._id,
+			}
+		}, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: `7d` });
+
+		res.cookie('jwt', refreshToken, {
+			httpOnly: true,
+			maxAge: 7 * 24 * 60 * 60 * 1000,
+			sameSite: false,
+		});
+
+		res.status(200).json({ accessToken, message: 'Login successful', user: user.email });
+	} catch (error) {
+		console.error('Error during login:', error);
+		res.status(500).json({ message: 'Internal server error' });
+	}
+
+}
+
+
+export { register, login };

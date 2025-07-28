@@ -8,6 +8,7 @@ import connectDB from './config/dbconnect'
 import rootRoute from "./routes/root"
 import notesRoute from './routes/notesRoutes';
 import usersRoute from './routes/userRoutes';
+import authRoute from './routes/authRoutes';
 dotenv.config();
 
 const app = express();
@@ -22,9 +23,12 @@ app.use(cookieParser());
 
 app.use("/", rootRoute)
 
+app.use('/api/auth', authRoute);
+
 app.use('/api/notes', notesRoute);
 
 app.use('/api/users', usersRoute);
+
 
 
 
