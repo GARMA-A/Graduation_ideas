@@ -1,12 +1,12 @@
 import { Response, Request } from 'express';
 import { User } from '../models/User';
 import bcrypt from 'bcrypt';
-import jwt, { JwtPayload, VerifyErrors } from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+
 
 const register = async (req: Request, res: Response) => {
 	try {
 		const { username, password, email, rememberMe } = req.body;
-		// Validate input
 		if (!username || !password || !email || !email.includes('@') || !email.includes('.') || password.length < 6) {
 			return res.status(400).json({ message: 'Username and password are required password must be more than 6 chars also valid email require' });
 		}
@@ -34,13 +34,20 @@ const register = async (req: Request, res: Response) => {
 			}
 		}, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: `7d` });
 
-		res.cookie('jwt', refreshToken, {
+		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,
 			maxAge: 7 * 24 * 60 * 60 * 1000,
 			sameSite: false,
+			secure: true,
+		});
+		res.cookie('accessToken', accessToken, {
+			httpOnly: true,
+			secure: true,
+			sameSite: 'lax',
+			maxAge: 30 * 60 * 1000,
 		});
 		await newUser.save();
-		res.status(201).json({ accessToken, message: 'User created successfully', user: newUser.email });
+		res.status(201).json({ message: 'User created successfully', user: newUser.email });
 	} catch (error) {
 		console.error('Error during signup:', error);
 		res.status(500).json({ message: 'Internal server error' });
@@ -73,13 +80,20 @@ const login = async (req: Request, res: Response) => {
 			}
 		}, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: `7d` });
 
-		res.cookie('jwt', refreshToken, {
+		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,
 			maxAge: 7 * 24 * 60 * 60 * 1000,
 			sameSite: false,
+			secure: true,
+		});
+		res.cookie('accessToken', accessToken, {
+			httpOnly: true,
+			secure: true,
+			sameSite: 'lax',
+			maxAge: 30 * 60 * 1000,
 		});
 
-		res.status(200).json({ accessToken, message: 'Login successful', user: user.email });
+		res.status(200).json({ message: 'Login successful', user: user.email });
 	} catch (error) {
 		console.error('Error during login:', error);
 		res.status(500).json({ message: 'Internal server error' });
@@ -89,29 +103,38 @@ const login = async (req: Request, res: Response) => {
 
 const refreshToken = async (req: Request, res: Response) => {
 	const cookies = req.cookies;
-	if (!cookies?.jwt) {
+	const refreshTokenCookie = cookies?.refreshToken;
+	if (!refreshTokenCookie) {
 		return res.status(401).json({ message: 'No refresh token found' });
 	}
-	const refreshToken = cookies.jwt;
-	jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string,
-		async (err: VerifyErrors | null, decoded: JwtPayload | string | undefined) => {
-			if (err) {
-				return res.status(403).json({ message: 'Failed to authenticate refresh token' });
+	jwt.verify(
+		refreshTokenCookie,
+		process.env.REFRESH_TOKEN_SECRET as string,
+		(err: jwt.VerifyErrors | null, decoded: string | JwtPayload | undefined) => {
+			if (err || !decoded || typeof decoded === 'string') {
+				return res.status(403).json({ message: 'Invalid refresh token' });
 			}
+
 			const payload = decoded as JwtPayload;
 			const userId = payload.userInfo.id;
-			const foundUser = await User.findById(userId).exec();
-			if (!foundUser) {
-				return res.status(403).json({ message: 'User not found' });
-			}
-			const accessToken = jwt.sign({
-				userInfo: {
-					id: userId,
-				}
-			}, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "30m" });
-			res.status(200).json({ accessToken, message: 'Refresh token successful' });
-		});
+
+			const newAccessToken = jwt.sign(
+				{ userInfo: { id: userId } },
+				process.env.ACCESS_TOKEN_SECRET as string,
+				{ expiresIn: '30m' }
+			);
+
+			res.cookie('accessToken', newAccessToken, {
+				httpOnly: true,
+				secure: true,
+				sameSite: 'lax',
+				maxAge: 30 * 60 * 1000,
+			});
+			res.status(200).json({ message: 'Access token refreshed' });
+		}
+	);
 }
+
 
 
 

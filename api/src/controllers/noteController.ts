@@ -2,16 +2,20 @@ import { Notes } from '../models/Notes';
 import { Response, Request } from 'express';
 
 
-const getAllNotes = async (_: Request, res: Response) => {
+const getAllNotes = async (req: Request, res: Response) => {
 	try {
-		const notes = await Notes.find();
+		const userId = req.userId;
+		if (!userId) {
+			return res.status(401).json({ message: 'Unauthorized: User ID missing' });
+		}
+		const notes = await Notes.find({ userId });
 		res.status(200).json(notes);
 	} catch (error) {
 		res.status(500).json({ message: 'Error fetching notes', error });
 	}
 }
 
-
+// this end point is not used my the client side app
 const getNoteById = async (req: Request, res: Response) => {
 	try {
 		const noteId = req.params.id;
@@ -27,6 +31,7 @@ const getNoteById = async (req: Request, res: Response) => {
 
 const createNote = async (req: Request, res: Response) => {
 	try {
+		req.body.userId = req.userId;
 		const newNote = new Notes(req.body);
 		await newNote.save();
 		res.status(201).json(newNote);
@@ -38,6 +43,9 @@ const createNote = async (req: Request, res: Response) => {
 const updateNote = async (req: Request, res: Response) => {
 	try {
 		const noteId = req.params.id;
+		if (!noteId) {
+			return res.status(400).json({ message: 'Note ID is required' });
+		}
 		const updatedNote = await Notes.findByIdAndUpdate(noteId, req
 			.body, { new: true });
 		if (!updatedNote) {
