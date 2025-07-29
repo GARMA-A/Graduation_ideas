@@ -1,9 +1,11 @@
 import express from 'express';
 import { getAllNotes, getNoteById, updateNote, deleteNote, createNote, toggleFavorite } from '../controllers/noteController';
+import { verifyJWT } from '../middlewares/verifyJWT';
 
 
 const router = express.Router();
 
+router.use(verifyJWT);
 
 router.route("/getAll").get(getAllNotes);
 

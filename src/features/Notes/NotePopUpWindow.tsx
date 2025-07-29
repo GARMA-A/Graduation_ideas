@@ -13,9 +13,6 @@ import { useCreateNote, useDeleteNote, useUpdateNote } from "./query_fetch";
 import { useCallback, useEffect } from "react";
 
 
-
-
-
 export function NotePopUpWindow({ openForEdit }: { openForEdit: boolean }) {
 
 
