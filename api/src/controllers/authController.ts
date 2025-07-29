@@ -1,7 +1,7 @@
 import { Response, Request } from 'express';
 import { User } from '../models/User';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload, VerifyErrors } from 'jsonwebtoken';
 
 const register = async (req: Request, res: Response) => {
 	try {
@@ -26,7 +26,7 @@ const register = async (req: Request, res: Response) => {
 				id: newUser._id,
 			}
 
-		}, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: '30m' });
+		}, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "30m" });
 
 		const refreshToken = jwt.sign({
 			userInfo: {
@@ -65,7 +65,7 @@ const login = async (req: Request, res: Response) => {
 			userInfo: {
 				id: user._id,
 			}
-		}, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: '30m' });
+		}, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "30m" });
 
 		const refreshToken = jwt.sign({
 			userInfo: {
@@ -84,8 +84,36 @@ const login = async (req: Request, res: Response) => {
 		console.error('Error during login:', error);
 		res.status(500).json({ message: 'Internal server error' });
 	}
-
 }
 
 
-export { register, login };
+const refreshToken = async (req: Request, res: Response) => {
+	const cookies = req.cookies;
+	if (!cookies?.jwt) {
+		return res.status(401).json({ message: 'No refresh token found' });
+	}
+	const refreshToken = cookies.jwt;
+	jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string,
+		async (err: VerifyErrors | null, decoded: JwtPayload | string | undefined) => {
+			if (err) {
+				return res.status(403).json({ message: 'Failed to authenticate refresh token' });
+			}
+			const payload = decoded as JwtPayload;
+			const userId = payload.userInfo.id;
+			const foundUser = await User.findById(userId).exec();
+			if (!foundUser) {
+				return res.status(403).json({ message: 'User not found' });
+			}
+			const accessToken = jwt.sign({
+				userInfo: {
+					id: userId,
+				}
+			}, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "30m" });
+			res.status(200).json({ accessToken, message: 'Refresh token successful' });
+		});
+}
+
+
+
+
+export { register, login, refreshToken };

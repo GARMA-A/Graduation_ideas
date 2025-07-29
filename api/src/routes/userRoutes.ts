@@ -1,9 +1,11 @@
 import express from 'express';
 import { createUser, deleteUser, getAllUsers, getUserById, updateUser } from '../controllers/userController';
+import { verifyJWT } from '../middlewares/verifyJWT';
 
 const router = express.Router();
 
 
+router.use(verifyJWT);
 
 router.route("/getAll").get(getAllUsers);
 

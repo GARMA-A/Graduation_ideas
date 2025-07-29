@@ -32,13 +32,12 @@ export const createUser = async (req: Request, res: Response) => {
 	if (!req.body.email || !emailRegex.test(req.body.email)) {
 		return res.status(400).json({ message: 'Invalid email format' });
 	}
-	const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-	if (!req.body.password || !passwordRegex.test(req.body.password)) {
-		return res.status(400).json({ message: 'Password must be at least 8 characters long and contain at least one letter and one number' });
+	if (!req.body.password) {
+		return res.status(400).json({ message: 'password is require' });
 	}
 	try {
 		const existingUser = await User.findOne({ email: req.body.email });
-		if (!existingUser) {
+		if (existingUser) {
 			return res.status(400).json({ message: 'User with this email already exists' });
 		}
 		const newUser = new User(req.body);
