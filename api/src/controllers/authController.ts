@@ -38,6 +38,15 @@ const register = async (req: Request, res: Response) => {
 			}
 		}, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: expirationTime });
 
+
+		try {
+			await newUser.save();
+			res.status(201).json({ message: 'User created successfully', user: newUser.email });
+		} catch (error) {
+			console.error('Error saving user:', error);
+			return res.status(500).json({ message: 'Internal server error' });
+		}
+
 		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,
 			maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -50,8 +59,6 @@ const register = async (req: Request, res: Response) => {
 			sameSite: 'none',
 			maxAge: 30 * 60 * 1000,
 		});
-		await newUser.save();
-		res.status(201).json({ message: 'User created successfully', user: newUser.email });
 	} catch (error) {
 		console.error('Error during signup:', error);
 		res.status(500).json({ message: 'Internal server error' });
