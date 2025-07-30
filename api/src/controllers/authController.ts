@@ -8,7 +8,9 @@ const register = async (req: Request, res: Response) => {
 	try {
 		const { username, password, email, rememberMe } = req.body;
 		if (!username || !password || !email || !email.includes('@') || !email.includes('.') || password.length < 6) {
-			return res.status(400).json({ message: 'Username and password are required password must be more than 6 chars also valid email require' });
+			return res.status(400).json({
+				message: 'Username, password, and valid email are required.Password must be at least 6 characters.'
+			});
 		}
 		const user = await User.findOne({ email }).exec();
 		if (user) {
@@ -28,11 +30,13 @@ const register = async (req: Request, res: Response) => {
 
 		}, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "30m" });
 
+		const expirationTime = rememberMe ? '30d' : '3d';
+
 		const refreshToken = jwt.sign({
 			userInfo: {
 				id: newUser._id,
 			}
-		}, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: `7d` });
+		}, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: expirationTime });
 
 		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,
@@ -74,11 +78,13 @@ const login = async (req: Request, res: Response) => {
 			}
 		}, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "30m" });
 
+		const expirationTime = user.rememberMe ? '30d' : '3d';
+
 		const refreshToken = jwt.sign({
 			userInfo: {
 				id: user._id,
 			}
-		}, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: `7d` });
+		}, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: expirationTime });
 
 		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,

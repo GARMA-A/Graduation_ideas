@@ -41,7 +41,7 @@ export default function LoginForm({ type = "login", toggleMode }: { type: "login
 			console.log("Signing up:", data);
 			console.log(registerError);
 		} else {
-			loginMute({ email: data.email, password: data.password });
+			loginMute({ email: data.email, password: data.password, rememberMe: data.rememberMe || false });
 			console.log("Signing in:", data);
 			console.log(loginError);
 		}
