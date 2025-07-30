@@ -6,15 +6,22 @@ import {
 	Checkbox,
 	FormControlLabel,
 	Divider,
-	InputAdornment
+	InputAdornment,
+	CircularProgress
 } from '@mui/material';
 
 import { LockOutlined, Email, Password, Google, Person } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
 import { type FormType } from './formType';
+import { useLogin, useRegister } from './query-login';
+import type { UserType } from './UserType';
 
 
 export default function LoginForm({ type = "login", toggleMode }: { type: "login" | "register", toggleMode: () => void }) {
+
+	const { mutate: registerMute, isError: isRegisterError, isSuccess: isRegisterSuccess, isPending: isRegisterPending, error: registerError } = useRegister();
+
+	const { mutate: loginMute, isError: isLoginError, isSuccess: isLoginSuccess, isPending: isLoginPending, error: loginError } = useLogin();
 
 	const { register, formState, handleSubmit, getValues } = useForm<FormType>(
 		{
@@ -23,16 +30,20 @@ export default function LoginForm({ type = "login", toggleMode }: { type: "login
 	);
 
 	const { errors } = formState;
+	const thereIsError = isRegisterError || isLoginError;
+	const thereIsSuccess = isRegisterSuccess || isLoginSuccess;
+	const thereIsPending = isRegisterPending || isLoginPending;
 
-	function onSubmit(data: FormType) {
-		// Handle form submission logic here
-		console.log(data);
+
+	function onSubmit(data: UserType) {
 		if (type === "register") {
-			// Handle signup logic
+			registerMute(data);
 			console.log("Signing up:", data);
+			console.log(registerError);
 		} else {
-			// Handle signin logic
+			loginMute({ email: data.email, password: data.password });
 			console.log("Signing in:", data);
+			console.log(loginError);
 		}
 	}
 
@@ -109,6 +120,9 @@ export default function LoginForm({ type = "login", toggleMode }: { type: "login
 			/>
 
 			{type === 'register' && <TextField
+				{...register("username", {
+					required: 'User Name is required',
+				})}
 				required
 				fullWidth
 				id="username"
@@ -204,6 +218,16 @@ export default function LoginForm({ type = "login", toggleMode }: { type: "login
 				}}
 			/>}
 
+			{/* Error Messages */}
+			{thereIsError && <Typography color="error.main" variant="body2" sx={{ mt: 1 }}>
+				{type === "register" ? registerError?.message : loginError?.message}
+			</Typography>}
+			{thereIsSuccess && <Typography color="success.main" variant="body2" sx={{ mt: 1 }}>
+				{type === "register" ? "Registration successful! Please log in." : "Login successful!"}
+			</Typography>}
+
+
+
 			{/* Remember Me & Forgot Password */}
 			{type === 'login' && <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 				<FormControlLabel
@@ -224,7 +248,7 @@ export default function LoginForm({ type = "login", toggleMode }: { type: "login
 			</Box>}
 
 			{/* Submit Button */}
-			<Button
+			{thereIsPending ? <CircularProgress /> : < Button
 				type="submit"
 				fullWidth
 				variant="contained"
@@ -232,24 +256,26 @@ export default function LoginForm({ type = "login", toggleMode }: { type: "login
 				sx={{ mt: 1, py: 1.5 }}
 			>
 				{type === "login" ? " Login" : "Register"}
-			</Button>
+			</Button>}
 
 			{/* Divider */}
-			{type === "login" && <> <Divider sx={{ my: 2 }}>
-				<Typography variant="caption" color="text.secondary">
-					OR
-				</Typography>
-			</Divider>
+			{
+				type === "login" && <> <Divider sx={{ my: 2 }}>
+					<Typography variant="caption" color="text.secondary">
+						OR
+					</Typography>
+				</Divider>
 
-				{/* Social Login Buttons */}
-				<Button
-					fullWidth
-					variant="outlined"
-					sx={{ py: 1.5, mb: 2, backgroundColor: "gray" }}
-				>
-					<Google sx={{ mr: 1 }} />
-					Continue with Google
-				</Button></>}
+					{/* Social Login Buttons */}
+					<Button
+						fullWidth
+						variant="outlined"
+						sx={{ py: 1.5, mb: 2, backgroundColor: "gray" }}
+					>
+						<Google sx={{ mr: 1 }} />
+						Continue with Google
+					</Button></>
+			}
 
 			{/* Sign Up Link */}
 			<Box sx={{ textAlign: 'center' }}>
@@ -266,7 +292,7 @@ export default function LoginForm({ type = "login", toggleMode }: { type: "login
 					</Button>
 				</Typography>
 			</Box>
-		</form>
+		</form >
 	);
 };
 
