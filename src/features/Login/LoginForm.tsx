@@ -3,7 +3,6 @@ import {
 	TextField,
 	Button,
 	Typography,
-	Link,
 	Checkbox,
 	FormControlLabel,
 	Divider,
@@ -15,19 +14,20 @@ import { useForm } from 'react-hook-form';
 import { type FormType } from './formType';
 
 
-export default function LoginForm({ type = "signin" }: { type?: "signin" | "signup" }) {
+export default function LoginForm({ type = "login", toggleMode }: { type: "login" | "register", toggleMode: () => void }) {
 
 	const { register, formState, handleSubmit, getValues } = useForm<FormType>(
 		{
 			mode: "onChange"
 		}
 	);
+
 	const { errors } = formState;
 
 	function onSubmit(data: FormType) {
 		// Handle form submission logic here
 		console.log(data);
-		if (type === "signup") {
+		if (type === "register") {
 			// Handle signup logic
 			console.log("Signing up:", data);
 		} else {
@@ -35,9 +35,6 @@ export default function LoginForm({ type = "signin" }: { type?: "signin" | "sign
 			console.log("Signing in:", data);
 		}
 	}
-
-
-
 
 
 	return (
@@ -65,7 +62,7 @@ export default function LoginForm({ type = "signin" }: { type?: "signin" | "sign
 					<LockOutlined sx={{ color: 'white' }} />
 				</Box>
 				<Typography component="h1" variant="h5" fontWeight="bold">
-					{type == "signup" ? "Sign up" : "Sign in"}
+					{type == "register" ? "Register" : "Login"}
 				</Typography>
 			</Box>
 
@@ -111,7 +108,7 @@ export default function LoginForm({ type = "signin" }: { type?: "signin" | "sign
 				}}
 			/>
 
-			{type === 'signup' && <TextField
+			{type === 'register' && <TextField
 				required
 				fullWidth
 				id="username"
@@ -171,13 +168,13 @@ export default function LoginForm({ type = "signin" }: { type?: "signin" | "sign
 				}}
 			/>
 
-			{type === 'signup' && < TextField
+			{type === 'register' && < TextField
 				{...register("confirmPassword", {
 					required: true,
-					validate: value => value === getValues("password") || "Passwords do not match"
+					validate: value => value === getValues("password") || "confirm password do not match the password"
 				})}
 				error={!!errors.confirmPassword}
-				helperText={errors.confirmPassword ? 'Confirm Password is required' : ''}
+				helperText={errors.confirmPassword ? errors.confirmPassword.message : ''}
 				required
 				fullWidth
 				name="confirmPassword"
@@ -208,7 +205,7 @@ export default function LoginForm({ type = "signin" }: { type?: "signin" | "sign
 			/>}
 
 			{/* Remember Me & Forgot Password */}
-			{type === 'signin' && <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+			{type === 'login' && <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 				<FormControlLabel
 					{...register("rememberMe")}
 					control={
@@ -221,9 +218,9 @@ export default function LoginForm({ type = "signin" }: { type?: "signin" | "sign
 					}
 					label="Remember me"
 				/>
-				<Link href="#" variant="body2" color='info.main'>
-					Forgot password?
-				</Link>
+				{/* <Link href="#" variant="body2" color='info.main'> */}
+				{/* 	Forgot password? */}
+				{/* </Link> */}
 			</Box>}
 
 			{/* Submit Button */}
@@ -234,11 +231,11 @@ export default function LoginForm({ type = "signin" }: { type?: "signin" | "sign
 				size="large"
 				sx={{ mt: 1, py: 1.5 }}
 			>
-				{type === "signin" ? "Sign In" : "Sign Up"}
+				{type === "login" ? " Login" : "Register"}
 			</Button>
 
 			{/* Divider */}
-			{type === "signin" && <> <Divider sx={{ my: 2 }}>
+			{type === "login" && <> <Divider sx={{ my: 2 }}>
 				<Typography variant="caption" color="text.secondary">
 					OR
 				</Typography>
@@ -257,13 +254,16 @@ export default function LoginForm({ type = "signin" }: { type?: "signin" | "sign
 			{/* Sign Up Link */}
 			<Box sx={{ textAlign: 'center' }}>
 				<Typography variant="body2">
-					{type === 'signin' ? "Don't have an account? " : "Already have an account? "}
-					<Link href="#" variant="body2"
-						color="info.main"
-						sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
+					{type === 'login' ? "Don't have an account? " : "Already have an account? "}
+					<Button
+						onClick={toggleMode}
+						sx={{
+							textDecoration: 'none', '&:hover': { textDecoration: 'underline' },
+							color: 'info.main',
+						}}
 					>
-						{type === "signin" ? "Sign Up" : "Sign In"}
-					</Link>
+						{type === "login" ? "Register" : "Login"}
+					</Button>
 				</Typography>
 			</Box>
 		</form>
