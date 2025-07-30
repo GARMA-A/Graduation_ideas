@@ -11,7 +11,7 @@ export function useLogin() {
 	const navigate = useNavigate();
 	const qc = useQueryClient();
 	return useMutation({
-		mutationFn: async (user: { email: string, password: string }) => {
+		mutationFn: async (user: { email: string, password: string, rememberMe: boolean }) => {
 			const res = await fetch(`${apiURL}/api/auth/login`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
