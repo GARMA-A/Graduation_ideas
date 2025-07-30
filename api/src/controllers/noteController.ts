@@ -1,14 +1,25 @@
 import { Notes } from '../models/Notes';
 import { Response, Request } from 'express';
+import jwt from 'jsonwebtoken';
 
 
 const getAllNotes = async (req: Request, res: Response) => {
 	try {
-		const userId = req.userId;
-		if (!userId) {
-			return res.status(401).json({ message: 'Unauthorized: User ID missing' });
+		const token = req.cookies.accessToken;
+		if (!token) {
+			return res.status(401).json({ message: 'Access token missing' });
 		}
-		const notes = await Notes.find({ userId });
+		let decoded: jwt.JwtPayload | { userInfo: { id: string } } | string;
+		try {
+			decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string) as { userInfo: { id: string } };
+		} catch (err) {
+			return res.status(403).json({ message: 'Invalid access token', error: err });
+		}
+		const userId = decoded.userInfo?.id;
+		if (!userId) {
+			return res.status(403).json({ message: 'Invalid token payload' });
+		}
+		const notes = await Notes.find({ userId: userId });
 		res.status(200).json(notes);
 	} catch (error) {
 		res.status(500).json({ message: 'Error fetching notes', error });
@@ -18,6 +29,7 @@ const getAllNotes = async (req: Request, res: Response) => {
 // this end point is not used my the client side app
 const getNoteById = async (req: Request, res: Response) => {
 	try {
+
 		const noteId = req.params.id;
 		const note = await Notes.findById(noteId);
 		if (!note) {
@@ -31,7 +43,21 @@ const getNoteById = async (req: Request, res: Response) => {
 
 const createNote = async (req: Request, res: Response) => {
 	try {
-		req.body.userId = req.userId;
+		const token = req.cookies.accessToken;
+		if (!token) {
+			return res.status(401).json({ message: 'Access token missing' });
+		}
+		let decoded: jwt.JwtPayload | { userInfo: { id: string } } | string;
+		try {
+			decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string) as { userInfo: { id: string } };
+		} catch (err) {
+			return res.status(403).json({ message: 'Invalid access token', error: err });
+		}
+		const userId = decoded.userInfo?.id;
+		if (!userId) {
+			return res.status(403).json({ message: 'Invalid token payload' });
+		}
+		req.body.userId = userId;
 		const newNote = new Notes(req.body);
 		await newNote.save();
 		res.status(201).json(newNote);

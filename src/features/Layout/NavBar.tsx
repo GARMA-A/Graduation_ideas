@@ -9,11 +9,12 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import Favorite from '../Notes/Fovorite';
 import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux';
 import type { AppDispatch } from '../../store';
-import { emptySearchQuery, setFavoriteFilterActive } from '../Notes/noteSlice';
+import { emptySearchQuery, setCurrentNote, setFavoriteFilterActive } from '../Notes/noteSlice';
 import type { RootState } from '../../store';
 import { useLogout } from '../Login/query-login';
 import ConfirmDialog from './ConfirmDialog';
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 
 
 
@@ -26,6 +27,8 @@ export default function NavBar() {
   const favoriteFilterActive = useAppSelector((state) => state.notes.favoriteFilterActive)
 
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
+  const queryClient = useQueryClient();
+
 
 
 
@@ -38,6 +41,13 @@ export default function NavBar() {
       dispatch(setFavoriteFilterActive(true));
     }
     dispatch(emptySearchQuery());
+  }
+
+  function handleLogout() {
+    logoutMut();
+    setDialogIsOpen(false);
+    setCurrentNote({ _id: '', title: '', description: '', favorite: false });
+    queryClient.clear();
   }
 
 
@@ -65,7 +75,7 @@ export default function NavBar() {
           >
             My Notes
           </Typography>
-          <ConfirmDialog open={dialogIsOpen} onConfirm={logoutMut} onClose={() => setDialogIsOpen(false)} />
+          <ConfirmDialog open={dialogIsOpen} onConfirm={handleLogout} onClose={() => setDialogIsOpen(false)} />
           <Box sx={{ flexGrow: 1 }} />
           <IconButton color="inherit" onClick={toggleMode}>
             {mode === 'dark' ? <WbSunny /> : <Brightness2 />}
