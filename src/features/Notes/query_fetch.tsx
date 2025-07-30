@@ -9,9 +9,13 @@ export function useNotes() {
   return useQuery<NoteType[], Error>({
     queryKey: ['notes'],
     queryFn: async () => {
-      const r = await fetch(`${apiURL}/api/notes/getAll`);
-      if (!r.ok) throw new Error('Failed to fetch notes');
-      return r.json();
+      const r = await fetch(`${apiURL}/api/notes/getAll`, { credentials: 'include' });
+      const data = await r.json();
+      console.log(data);
+      if (!r.ok) {
+        throw new Error(data.message || 'Failed to fetch notes');
+      }
+      return data;
     },
   });
 }
@@ -20,15 +24,25 @@ export function useNotes() {
 export function useUpdateNote() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (note: NoteType) =>
-      fetch(`${apiURL}/api/notes/update/${note._id}`, {
+    mutationFn: async (note: NoteType) => {
+      const res = await fetch(`${apiURL}/api/notes/update/${note._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(note),
-      }).then(r => {
-        if (!r.ok) throw new Error('Failed to update note');
-        return r.json();
-      }),
+        credentials: 'include',
+      })
+
+      const data = await res.json();
+      console.log('Status:', res.status);
+      console.log('Response body:', data);
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Failed to register');
+      }
+
+      return data;
+
+    },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['notes'] });
 
@@ -43,9 +57,16 @@ export function useDeleteNote() {
   const qc = useQueryClient();
   return useMutation<string, Error, string>({
     mutationFn: async (id) => {
-      const r = await fetch(`${apiURL}/api/notes/delete/${id}`, { method: 'DELETE' });
-      if (!r.ok) throw new Error('Failed to delete note');
-      return id;
+      const res = await fetch(`${apiURL}/api/notes/delete/${id}`, { method: 'DELETE', credentials: 'include' });
+      const data = await res.json();
+      console.log('Status:', res.status);
+      console.log('Response body:', data);
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Failed to register');
+      }
+
+      return data;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['notes'] });
@@ -59,13 +80,22 @@ export function useCreateNote() {
   const qc = useQueryClient();
   return useMutation<NoteType, Error, Omit<NoteType, '_id'>>({
     mutationFn: async (note) => {
-      const r = await fetch(`${apiURL}/api/notes/create`, {
+      const res = await fetch(`${apiURL}/api/notes/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: note.title, description: note.description, favorite: note.favorite }),
+        credentials: 'include',
+
       });
-      if (!r.ok) throw new Error('Failed to create note');
-      return r.json();
+      const data = await res.json();
+      console.log('Status:', res.status);
+      console.log('Response body:', data);
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Failed to register');
+      }
+
+      return data;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['notes'] });
@@ -80,9 +110,18 @@ export function useToggleFavorite() {
   const qc = useQueryClient();
   return useMutation<string, Error, string>({
     mutationFn: async (id) => {
-      const r = await fetch(`${apiURL}/api/notes/toggleFavorite/${id}`, { method: 'PUT' });
-      if (!r.ok) throw new Error('Failed to toggle favorite');
-      return id;
+      const res = await fetch(`${apiURL}/api/notes/toggleFavorite/${id}`, {
+        method: 'PUT',
+        credentials: 'include',
+      });
+      const data = await res.json();
+      console.log('Status:', res.status);
+      console.log('Response body:', data);
+      if (!res.ok) {
+        throw new Error(data.message || 'Failed to register');
+      }
+
+      return data;
     },
     onSuccess: (_, id) => {
       qc.setQueryData<NoteType[]>(['notes'], (notes) =>

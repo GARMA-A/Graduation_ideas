@@ -37,13 +37,13 @@ const register = async (req: Request, res: Response) => {
 		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,
 			maxAge: 7 * 24 * 60 * 60 * 1000,
-			sameSite: false,
+			sameSite: 'none',
 			secure: true,
 		});
 		res.cookie('accessToken', accessToken, {
 			httpOnly: true,
 			secure: true,
-			sameSite: 'lax',
+			sameSite: 'none',
 			maxAge: 30 * 60 * 1000,
 		});
 		await newUser.save();
@@ -83,13 +83,13 @@ const login = async (req: Request, res: Response) => {
 		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,
 			maxAge: 7 * 24 * 60 * 60 * 1000,
-			sameSite: false,
+			sameSite: 'none',
 			secure: true,
 		});
 		res.cookie('accessToken', accessToken, {
 			httpOnly: true,
 			secure: true,
-			sameSite: 'lax',
+			sameSite: 'none',
 			maxAge: 30 * 60 * 1000,
 		});
 
@@ -127,7 +127,7 @@ const refreshToken = async (req: Request, res: Response) => {
 			res.cookie('accessToken', newAccessToken, {
 				httpOnly: true,
 				secure: true,
-				sameSite: 'lax',
+				sameSite: 'none',
 				maxAge: 30 * 60 * 1000,
 			});
 			res.status(200).json({ message: 'Access token refreshed' });
@@ -136,7 +136,27 @@ const refreshToken = async (req: Request, res: Response) => {
 }
 
 
+const logout = async (_: Request, res: Response) => {
+	try {
+		res.clearCookie('refreshToken', {
+			httpOnly: true,
+			sameSite: 'none',
+			secure: true,
+		});
+		res.clearCookie('accessToken', {
+			httpOnly: true,
+			sameSite: 'none',
+			secure: true,
+		});
+		res.status(200).json({ message: 'Logout successful' });
+	} catch (error) {
+		console.error('Error during logout:', error);
+		res.status(500).json({ message: 'Internal server error' });
+	}
+}
 
 
 
-export { register, login, refreshToken };
+
+
+export { register, login, refreshToken, logout };

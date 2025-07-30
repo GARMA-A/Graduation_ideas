@@ -3,8 +3,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { WbSunny, Brightness2 } from '@mui/icons-material';
-import EditNoteIcon from '@mui/icons-material/EditNote';
+import { WbSunny, Brightness2, Logout } from '@mui/icons-material';
 import { useColorMode } from '../../contexts/useColorMode';
 import { useMediaQuery, useTheme } from '@mui/material';
 import Favorite from '../Notes/Fovorite';
@@ -12,6 +11,9 @@ import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux
 import type { AppDispatch } from '../../store';
 import { emptySearchQuery, setFavoriteFilterActive } from '../Notes/noteSlice';
 import type { RootState } from '../../store';
+import { useLogout } from '../Login/query-login';
+import ConfirmDialog from './ConfirmDialog';
+import { useState } from 'react';
 
 
 
@@ -23,6 +25,12 @@ export default function NavBar() {
   const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
   const favoriteFilterActive = useAppSelector((state) => state.notes.favoriteFilterActive)
 
+  const [dialogIsOpen, setDialogIsOpen] = useState(false);
+
+
+
+  const { mutate: logoutMut } = useLogout();
+
   function handleFavoriteClick() {
     if (favoriteFilterActive) {
       dispatch(setFavoriteFilterActive(false));
@@ -32,10 +40,7 @@ export default function NavBar() {
     dispatch(emptySearchQuery());
   }
 
-  function handleEditNoteClick() {
-    dispatch(setFavoriteFilterActive(false))
-    dispatch(emptySearchQuery());
-  }
+
 
   return (
     <Box sx={{ flexGrow: 1 }} >
@@ -47,9 +52,9 @@ export default function NavBar() {
             color="inherit"
             ria-label="open drawer"
             sx={{ mr: 2 }}
-            onClick={handleEditNoteClick}
+            onClick={() => setDialogIsOpen(true)}
           >
-            <EditNoteIcon />
+            <Logout />
 
           </IconButton>
           <Typography
@@ -60,6 +65,7 @@ export default function NavBar() {
           >
             My Notes
           </Typography>
+          <ConfirmDialog open={dialogIsOpen} onConfirm={logoutMut} onClose={() => setDialogIsOpen(false)} />
           <Box sx={{ flexGrow: 1 }} />
           <IconButton color="inherit" onClick={toggleMode}>
             {mode === 'dark' ? <WbSunny /> : <Brightness2 />}
