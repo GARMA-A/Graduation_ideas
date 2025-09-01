@@ -1,4 +1,20 @@
-api/
-src/api/
-pages/api/
-app/api/
+# Ignore backend source files (only include compiled dist)
+backend/src/
+backend/node_modules/
+backend/.env
+backend/nodemon.json
+
+# Ignore development files
+*.log
+.env
+.env.local
+.env.development
+.env.production
+
+# Ignore Docker files
+Dockerfile*
+docker-compose.yml
+
+# Ignore documentation that's not needed for deployment
+*.md
+!README.md

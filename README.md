@@ -27,8 +27,20 @@ docker-compose down
 
 
 ### The app will be deployed on:
-- **Frontend**: Vercel
-- **Backend**: Railway
+- **Frontend & Backend**: Vercel (serverless functions)
+- **Database**: MongoDB Atlas (recommended for Vercel deployment)
+
+## Deployment Options
+
+### Option 1: Vercel (Recommended)
+Both frontend and backend deploy as serverless functions on Vercel.
+See [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md) for detailed instructions.
+
+### Option 2: Local Development with Docker
+```bash
+docker-compose up    # Start all services
+docker-compose down  # Stop all services
+```
 
 
 
