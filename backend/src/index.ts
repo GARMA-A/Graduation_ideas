@@ -14,35 +14,32 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Initialize database connection
 connectDB();
 
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
-
 app.use("/", rootRoute)
-
 app.use('/api/auth', authRoute);
-
 app.use('/api/notes', notesRoute);
-
 app.use('/api/users', usersRoute);
 
+// For Vercel serverless deployment
+export default app;
 
-
-
-mongoose.connection.once('open', () => {
-	console.log('MongoDB connection established');
-	app.listen(PORT, () => {
-
-		console.log(`Server is running on port ${PORT}`);
-	}
-	);
-
-});
-mongoose.connection.on('error', (err) => {
-	console.error('MongoDB connection error:', err);
-});
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+	mongoose.connection.once('open', () => {
+		console.log('MongoDB connection established');
+		app.listen(PORT, () => {
+			console.log(`Server is running on port ${PORT}`);
+		});
+	});
+	mongoose.connection.on('error', (err) => {
+		console.error('MongoDB connection error:', err);
+	});
+}
 
 
